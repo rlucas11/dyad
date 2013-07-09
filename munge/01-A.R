@@ -58,7 +58,7 @@ final <- final[order(final$hid,final$wave),]
 # Create wide file for analysis
 finalMelt <- melt(final[,c("hid","wave","hls","wls")], na.rm=TRUE,id.vars=c("hid","wave"))
 finalLS <- dcast(finalMelt, hid ~ wave + variable, value.var="value")
+names(finalLS) <- c("hid",paste(c("hls","wls"), rep(1:10, each=2), sep=""))
 cache('finalLS')
-
 # Create Mplus Data (using MplusAutomation package)
 prepareMplusData(finalLS, filename="data/mplusLS.dat", dropCols=1)

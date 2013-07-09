@@ -1,8 +1,17 @@
-# Create and run Mplus models for dyadic starts model
+TITLE:
+Dyadic STARTS MODEL using HILDA Data
+DATA:
+FILE = "lsOut.dat";
+ 
+VARIABLE:
+NAMES = hls1 wls1 hls2 wls2 hls3 wls3 hls4 wls4 hls5 wls5 hls6 wls6 hls7 wls7 hls8
+     wls8 hls9 wls9 hls10 wls10; 
+ MISSING=.;
+ 
+ANALYSIS:
+ESTIMATOR = ML;
+MODEL:
 
-lsModel <- mplusObject(TITLE = 'Dyadic STARTS MODEL using HILDA Data',
-                  ANALYSIS = 'ESTIMATOR = ML;',
-                  MODEL = '
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Husband Model
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -145,7 +154,6 @@ ESIM = UESIM / sqrt (werror * herror);
 WREL = (wtraitVar + wArVar) / (wtraitVar + wArVar + werror);
 HREL = (htraitVar + hArVar) / (htraitVar + hArVar + herror);
 
-',
-                  OUTPUT = 'RESIDUAL STANDARDIZED CINTERVAL TECH3 TECH4 SAMPSTAT;',
-                  usevariables = names(finalLS[2:21]),
-                  rdata = finalLS)
+
+OUTPUT:
+RESIDUAL STANDARDIZED CINTERVAL TECH3 TECH4 SAMPSTAT;
