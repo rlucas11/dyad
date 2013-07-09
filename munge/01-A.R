@@ -47,6 +47,11 @@ finalCouples <- final[,1:2]
 names(finalCouples) <- c("wid","hid")
 cache('finalCouples')
 
+##################################################################################
+# Life Satisfaction
+##################################################################################
+
+# Create lifeSat file for analysis
 lifeSat <- satData[,c("xwaveid","wave","losat")]
 names(lifeSat) <- c("hid","wave","hls")
 final <- merge(finalCouples, lifeSat, by = "hid")

@@ -1,5 +1,5 @@
-------Begin Mplus Model Run: 08Jul2013 16:25:06------
-Target directory: src
+------Begin Mplus Model Run: 09Jul2013 06:31:15------
+Target directory: /home/rich/Projects/dyad/src
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: FALSE
@@ -7,4 +7,4 @@ Run options:
 ------
 Currently running model: dyadicStarts.inp
 
-------End Mplus Model Run: 08Jul2013 16:25:06------
+------End Mplus Model Run: 09Jul2013 06:31:15------
