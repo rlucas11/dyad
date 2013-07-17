@@ -67,3 +67,27 @@ names(finalLS) <- c("hid",paste(c("hls","wls"), rep(1:10, each=2), sep=""))
 cache('finalLS')
 # Create Mplus Data (using MplusAutomation package)
 prepareMplusData(finalLS, filename="data/mplusLS.dat", dropCols=1)
+
+
+##################################################################################
+# Satisfaction Files for Couples
+##################################################################################
+
+
+varNames <- names(satData)[3:11]
+hSat <- satData
+names(hSat) <- c("hid","wave",paste("h",varNames,sep=""))
+wSat <- satData
+names(wSat) <- c("wid","wave",paste("w",varNames,sep=""))
+
+finalSat <- merge(finalCouples, hSat, by = "hid")
+wSat$wid <- as.numeric(wSat$wid)
+finalSat <- merge(finalSat, wSat, by = c("wid", "wave"))
+finalSat <- finalSat[order(finalSat$hid, finalSat$wave),]
+
+#Create wide file for analysis
+firstMelt <- melt(finalSat[,-1], na.rm=TRUE, id.vars=c("hid","wave"))
+wideSatCouples <- dcast(firstMelt, hid ~ wave + variable, value.var = "value")
+
+cache('wideSatCouples')
+

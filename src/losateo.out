@@ -1,0 +1,3960 @@
+Mplus VERSION 6.1
+MUTHEN & MUTHEN
+07/17/2013   5:09 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+   Employment Opportunities
+  DATA:
+  FILE = "../data/losateo.dat";
+
+  VARIABLE:
+  NAMES = hls1 wls1 hls2 wls2 hls3 wls3 hls4 wls4 hls5 wls5 hls6 wls6 hls7 wls7 hls8
+       wls8 hls9 wls9 hls10 wls10;
+   MISSING=.;
+
+  ANALYSIS:
+  ESTIMATOR = ML;
+  MODEL:
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ! Husband Model
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  ! Fix residual observed variance to be equal
+
+  hls1*1 (herror);
+  hls2*1 (herror);
+  hls3*1 (herror);
+  hls4*1 (herror);
+  hls5*1 (herror);
+  hls6*1 (herror);
+  hls7*1 (herror);
+  hls8*1 (herror);
+  hls9*1 (herror);
+  hls10*1 (herror);
+
+  ! Create latent stable trait factor
+
+  htrait by hls1@1;
+  htrait by hls2@1;
+  htrait by hls3@1;
+  htrait by hls4@1;
+  htrait by hls5@1;
+  htrait by hls6@1;
+  htrait by hls7@1;
+  htrait by hls8@1;
+  htrait by hls9@1;
+  htrait by hls10@1;
+
+  ! Name stable trait variance
+  htrait*1 (htraitVar);
+
+  ! Set up autoregressive factors
+  har1 by hls1@1;
+  har2 by hls2@1;
+  har3 by hls3@1;
+  har4 by hls4@1;
+  har5 by hls5@1;
+  har6 by hls6@1;
+  har7 by hls7@1;
+  har8 by hls8@1;
+  har9 by hls9@1;
+  har10 by hls10@1;
+
+  ! Define autoregressive structure
+  har2 on har1*.7 (hstab);
+  har3 on har2*.7 (hstab);
+  har4 on har3*.7 (hstab);
+  har5 on har4*.7 (hstab);
+  har6 on har5*.7 (hstab);
+  har7 on har6*.7 (hstab);
+  har8 on har7*.7 (hstab);
+  har9 on har8*.7 (hstab);
+  har10 on har9*.7 (hstab);
+
+  ! Set name for initial AR variance (for later constraint)
+  har1*1 (hArVar);
+
+  ! Impose equality constraint on residual variances
+  har2*.3 (hNew);
+  har3*.3 (hNew);
+  har4*.3 (hNew);
+  har5*.3 (hNew);
+  har6*.3 (hNew);
+  har7*.3 (hNew);
+  har8*.3 (hNew);
+  har9*.3 (hNew);
+  har10*.3 (hNew);
+
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ! Wife Model
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  ! Fix residual observed variance to be equal
+
+  wls1*1 (werror);
+  wls2*1 (werror);
+  wls3*1 (werror);
+  wls4*1 (werror);
+  wls5*1 (werror);
+  wls6*1 (werror);
+  wls7*1 (werror);
+  wls8*1 (werror);
+  wls9*1 (werror);
+  wls10*1 (werror);
+
+  ! Create latent stable trait factor
+
+  wtrait by wls1@1;
+  wtrait by wls2@1;
+  wtrait by wls3@1;
+  wtrait by wls4@1;
+  wtrait by wls5@1;
+  wtrait by wls6@1;
+  wtrait by wls7@1;
+  wtrait by wls8@1;
+  wtrait by wls9@1;
+  wtrait by wls10@1;
+
+  ! Name stable trait variance
+  wtrait*1 (wtraitVar);
+
+  ! Set up autoregressive factors
+  war1 by wls1@1;
+  war2 by wls2@1;
+  war3 by wls3@1;
+  war4 by wls4@1;
+  war5 by wls5@1;
+  war6 by wls6@1;
+  war7 by wls7@1;
+  war8 by wls8@1;
+  war9 by wls9@1;
+  war10 by wls10@1;
+
+  ! Define autoregressive structure
+  war2 on war1*.7 (wstab);
+  war3 on war2*.7 (wstab);
+  war4 on war3*.7 (wstab);
+  war5 on war4*.7 (wstab);
+  war6 on war5*.7 (wstab);
+  war7 on war6*.7 (wstab);
+  war8 on war7*.7 (wstab);
+  war9 on war8*.7 (wstab);
+  war10 on war9*.7 (wstab);
+
+  ! Set name for initial AR variance (for later constraint)
+  war1*1 (wArVar);
+
+  ! Impose equality constraint on residual variances
+  war2*.3 (wNew);
+  war3*.3 (wNew);
+  war4*.3 (wNew);
+  war5*.3 (wNew);
+  war6*.3 (wNew);
+  war7*.3 (wNew);
+  war8*.3 (wNew);
+  war9*.3 (wNew);
+  war10*.3 (wNew);
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ! Dyadic Part of Model
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  ! Stable Trait Correlation
+  htrait with wtrait*.6 (UTSIM);
+
+  ! Initial AR Correlation
+  har1 with war1*.5 (UISIM);
+
+  ! New AR correlations
+  har2 with war2 (UNSIM);
+  har3 with war3 (UNSIM);
+  har4 with war4 (UNSIM);
+  har5 with war5 (UNSIM);
+  har6 with war6 (UNSIM);
+  har7 with war7 (UNSIM);
+  har8 with war8 (UNSIM);
+  har9 with war9 (UNSIM);
+  har10 with war10 (UNSIM);
+
+
+  ! State/Error Correlations
+  hls1 with wls1 (UESIM);
+  hls2 with wls2 (UESIM);
+  hls3 with wls3 (UESIM);
+  hls4 with wls4 (UESIM);
+  hls5 with wls5 (UESIM);
+  hls6 with wls6 (UESIM);
+  hls7 with wls7 (UESIM);
+  hls8 with wls8 (UESIM);
+  hls9 with wls9 (UESIM);
+  hls10 with wls10 (UESIM);
+
+  ! Make sure factors are uncorrelated
+  har1,war1 with htrait@0;
+  har1,war1 with wtrait@0;
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ! Model Constraints
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+  MODEL CONSTRAINT:
+
+  ! Nonlinear constraints for stationarity
+
+  ! Husbands
+  hNew = hArVar - (hArVar * hstab**2);
+
+  ! Wives
+  wNew = wArVar - (wArVar * wstab**2);
+
+  ! Create new parameters
+  NEW (TSIM ISIM NSIM ESIM HREL WREL);
+
+  TSIM = UTSIM / sqrt (wtraitVar * htraitVar);
+  ISIM = UISIM / sqrt (wArVar * hArVar);
+  NSIM = UNSIM / sqrt (wArVar * hArVar);
+  ESIM = UESIM / sqrt (werror * herror);
+  WREL = (wtraitVar + wArVar) / (wtraitVar + wArVar + werror);
+  HREL = (htraitVar + hArVar) / (htraitVar + hArVar + herror);
+
+
+  OUTPUT:
+  RESIDUAL STANDARDIZED CINTERVAL TECH3 TECH4 SAMPSTAT;
+
+
+
+*** WARNING
+  Variable name contains more than 8 characters.
+  Only the first 8 characters will be printed in the output.
+  Variable: HTRAITVAR
+*** WARNING
+  Variable name contains more than 8 characters.
+  Only the first 8 characters will be printed in the output.
+  Variable: WTRAITVAR
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  235
+   3 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Employment Opportunities
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                        2989
+
+Number of dependent variables                                   20
+Number of independent variables                                  0
+Number of continuous latent variables                           22
+
+Observed dependent variables
+
+  Continuous
+   HLS1        WLS1        HLS2        WLS2        HLS3        WLS3
+   HLS4        WLS4        HLS5        WLS5        HLS6        WLS6
+   HLS7        WLS7        HLS8        WLS8        HLS9        WLS9
+   HLS10       WLS10
+
+Continuous latent variables
+   HTRAIT      HAR1        HAR2        HAR3        HAR4        HAR5
+   HAR6        HAR7        HAR8        HAR9        HAR10       WTRAIT
+   WAR1        WAR2        WAR3        WAR4        WAR5        WAR6
+   WAR7        WAR8        WAR9        WAR10
+
+
+Estimator                                                       ML
+Information matrix                                        OBSERVED
+Maximum number of iterations                                  1000
+Convergence criterion                                    0.500D-04
+Maximum number of steepest descent iterations                   20
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+
+Input data file(s)
+  ../data/losateo.dat
+
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns          1143
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           0.807
+ WLS1           0.707         0.774
+ HLS2           0.642         0.596         0.695
+ WLS2           0.581         0.593         0.585         0.650
+ HLS3           0.592         0.560         0.587         0.528         0.650
+ WLS3           0.543         0.552         0.529         0.538         0.550
+ HLS4           0.554         0.521         0.543         0.490         0.546
+ WLS4           0.517         0.525         0.497         0.509         0.495
+ HLS5           0.532         0.506         0.522         0.475         0.518
+ WLS5           0.493         0.501         0.469         0.481         0.463
+ HLS6           0.523         0.497         0.512         0.468         0.510
+ WLS6           0.491         0.502         0.473         0.479         0.468
+ HLS7           0.492         0.471         0.477         0.439         0.474
+ WLS7           0.470         0.475         0.450         0.453         0.444
+ HLS8           0.466         0.445         0.452         0.418         0.448
+ WLS8           0.439         0.447         0.418         0.421         0.413
+ HLS9           0.488         0.470         0.467         0.435         0.463
+ WLS9           0.469         0.469         0.441         0.435         0.434
+ HLS10          0.473         0.455         0.453         0.421         0.449
+ WLS10          0.454         0.456         0.430         0.424         0.424
+
+
+           Covariance Coverage
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           0.614
+ HLS4           0.493         0.604
+ WLS4           0.517         0.512         0.582
+ HLS5           0.471         0.521         0.467         0.579
+ WLS5           0.480         0.460         0.485         0.480         0.550
+ HLS6           0.463         0.508         0.458         0.519         0.457
+ WLS6           0.476         0.464         0.477         0.465         0.487
+ HLS7           0.433         0.474         0.432         0.486         0.431
+ WLS7           0.451         0.442         0.456         0.441         0.462
+ HLS8           0.412         0.450         0.413         0.459         0.410
+ WLS8           0.423         0.416         0.425         0.412         0.431
+ HLS9           0.431         0.460         0.426         0.466         0.424
+ WLS9           0.436         0.430         0.432         0.427         0.435
+ HLS10          0.420         0.449         0.419         0.454         0.416
+ WLS10          0.423         0.419         0.423         0.420         0.425
+
+
+           Covariance Coverage
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6           0.573
+ WLS6           0.487         0.552
+ HLS7           0.496         0.445         0.539
+ WLS7           0.448         0.479         0.457         0.528
+ HLS8           0.466         0.420         0.472         0.421         0.507
+ WLS8           0.418         0.444         0.416         0.448         0.423
+ HLS9           0.472         0.435         0.470         0.433         0.465
+ WLS9           0.434         0.447         0.428         0.445         0.422
+ HLS10          0.459         0.426         0.459         0.421         0.453
+ WLS10          0.426         0.437         0.420         0.433         0.414
+
+
+           Covariance Coverage
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8           0.490
+ HLS9           0.423         0.559
+ WLS9           0.441         0.488         0.541
+ HLS10          0.414         0.492         0.450         0.541
+ WLS10          0.430         0.451         0.471         0.472         0.526
+
+
+SAMPLE STATISTICS
+
+
+     ESTIMATED SAMPLE STATISTICS
+
+
+           Means
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+      1         6.826         6.827         6.801         6.599         6.938
+
+
+           Means
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+      1         6.756         6.972         6.923         7.072         6.873
+
+
+           Means
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+      1         7.065         6.914         7.160         7.050         7.162
+
+
+           Means
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+      1         7.097         7.048         6.986         7.057         7.009
+
+
+           Covariances
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           8.137
+ WLS1           2.772         8.299
+ HLS2           4.644         2.209         7.146
+ WLS2           2.071         5.025         2.481         7.746
+ HLS3           4.172         2.196         4.660         2.299         7.146
+ WLS3           2.154         4.556         2.278         5.108         2.342
+ HLS4           3.888         2.311         4.506         2.448         5.043
+ WLS4           1.813         3.891         2.153         4.548         2.386
+ HLS5           3.187         1.941         3.796         1.952         3.922
+ WLS5           1.494         3.623         1.918         3.969         2.053
+ HLS6           3.405         2.144         3.933         2.241         4.072
+ WLS6           1.802         3.378         2.050         3.904         1.943
+ HLS7           3.425         2.094         4.039         2.280         4.090
+ WLS7           1.955         3.326         2.198         3.802         2.081
+ HLS8           3.223         1.788         3.859         2.060         3.717
+ WLS8           1.559         3.064         1.860         3.247         1.614
+ HLS9           3.054         1.839         3.760         2.017         3.683
+ WLS9           1.641         2.984         1.843         3.177         1.714
+ HLS10          3.003         1.670         3.470         1.894         3.288
+ WLS10          1.565         3.087         1.681         3.471         1.615
+
+
+           Covariances
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           7.723
+ HLS4           2.507         7.150
+ WLS4           4.789         2.702         6.951
+ HLS5           2.006         4.468         2.066         5.895
+ WLS5           4.330         2.403         4.556         1.933         6.362
+ HLS6           2.268         4.526         2.272         4.287         2.085
+ WLS6           4.014         2.575         4.120         1.971         4.247
+ HLS7           2.333         4.654         2.240         4.460         2.151
+ WLS7           3.918         2.511         4.044         2.026         4.039
+ HLS8           2.195         4.243         2.253         3.790         2.030
+ WLS8           3.388         2.108         3.858         1.864         3.615
+ HLS9           2.266         4.181         2.289         3.931         2.242
+ WLS9           3.493         2.170         3.616         1.767         3.615
+ HLS10          2.207         3.898         1.981         3.460         2.029
+ WLS10          3.354         2.018         3.410         1.681         3.498
+
+
+           Covariances
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6           6.165
+ WLS6           2.355         6.422
+ HLS7           4.729         2.139         6.506
+ WLS7           2.283         4.389         2.377         6.249
+ HLS8           4.181         2.096         4.550         2.286         6.119
+ WLS8           1.952         4.000         2.061         4.200         2.312
+ HLS9           4.327         2.177         4.491         2.283         4.681
+ WLS9           2.043         3.674         1.856         3.868         2.117
+ HLS10          3.860         1.938         4.177         2.097         4.327
+ WLS10          1.990         3.482         2.053         3.816         2.171
+
+
+           Covariances
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8           5.853
+ HLS9           2.248         6.892
+ WLS9           4.222         2.552         6.375
+ HLS10          2.004         4.715         2.110         6.569
+ WLS10          3.982         2.219         4.235         2.575         6.624
+
+
+           Correlations
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           1.000
+ WLS1           0.337         1.000
+ HLS2           0.609         0.287         1.000
+ WLS2           0.261         0.627         0.333         1.000
+ HLS3           0.547         0.285         0.652         0.309         1.000
+ WLS3           0.272         0.569         0.307         0.660         0.315
+ HLS4           0.510         0.300         0.630         0.329         0.705
+ WLS4           0.241         0.512         0.305         0.620         0.339
+ HLS5           0.460         0.277         0.585         0.289         0.604
+ WLS5           0.208         0.499         0.285         0.565         0.305
+ HLS6           0.481         0.300         0.593         0.324         0.613
+ WLS6           0.249         0.463         0.303         0.554         0.287
+ HLS7           0.471         0.285         0.592         0.321         0.600
+ WLS7           0.274         0.462         0.329         0.546         0.311
+ HLS8           0.457         0.251         0.584         0.299         0.562
+ WLS8           0.226         0.440         0.288         0.482         0.250
+ HLS9           0.408         0.243         0.536         0.276         0.525
+ WLS9           0.228         0.410         0.273         0.452         0.254
+ HLS10          0.411         0.226         0.507         0.266         0.480
+ WLS10          0.213         0.416         0.244         0.485         0.235
+
+
+           Correlations
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           1.000
+ HLS4           0.337         1.000
+ WLS4           0.654         0.383         1.000
+ HLS5           0.297         0.688         0.323         1.000
+ WLS5           0.618         0.356         0.685         0.316         1.000
+ HLS6           0.329         0.682         0.347         0.711         0.333
+ WLS6           0.570         0.380         0.617         0.320         0.665
+ HLS7           0.329         0.682         0.333         0.720         0.334
+ WLS7           0.564         0.376         0.614         0.334         0.641
+ HLS8           0.319         0.641         0.345         0.631         0.325
+ WLS8           0.504         0.326         0.605         0.317         0.592
+ HLS9           0.311         0.596         0.331         0.617         0.339
+ WLS9           0.498         0.321         0.543         0.288         0.568
+ HLS10          0.310         0.569         0.293         0.556         0.314
+ WLS10          0.469         0.293         0.503         0.269         0.539
+
+
+           Correlations
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6           1.000
+ WLS6           0.374         1.000
+ HLS7           0.747         0.331         1.000
+ WLS7           0.368         0.693         0.373         1.000
+ HLS8           0.681         0.334         0.721         0.370         1.000
+ WLS8           0.325         0.653         0.334         0.694         0.386
+ HLS9           0.664         0.327         0.671         0.348         0.721
+ WLS9           0.326         0.574         0.288         0.613         0.339
+ HLS10          0.607         0.298         0.639         0.327         0.683
+ WLS10          0.311         0.534         0.313         0.593         0.341
+
+
+           Correlations
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8           1.000
+ HLS9           0.354         1.000
+ WLS9           0.691         0.385         1.000
+ HLS10          0.323         0.701         0.326         1.000
+ WLS10          0.639         0.328         0.652         0.390         1.000
+
+
+     MAXIMUM LOG-LIKELIHOOD VALUE FOR THE UNRESTRICTED (H1) MODEL IS  -73079.520
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       32
+
+Loglikelihood
+
+          H0 Value                      -73523.950
+          H1 Value                      -73079.520
+
+Information Criteria
+
+          Akaike (AIC)                  147111.900
+          Bayesian (BIC)                147303.986
+          Sample-Size Adjusted BIC      147202.310
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit
+
+          Value                            888.861
+          Degrees of Freedom                   198
+          P-Value                           0.0000
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.034
+          90 Percent C.I.                    0.032  0.036
+          Probability RMSEA <= .05           1.000
+
+CFI/TLI
+
+          CFI                                0.959
+          TLI                                0.961
+
+Chi-Square Test of Model Fit for the Baseline Model
+
+          Value                          17026.342
+          Degrees of Freedom                   190
+          P-Value                           0.0000
+
+SRMR (Standardized Root Mean Square Residual)
+
+          Value                              0.062
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ HTRAIT   BY
+    HLS1               1.000      0.000    999.000    999.000
+    HLS2               1.000      0.000    999.000    999.000
+    HLS3               1.000      0.000    999.000    999.000
+    HLS4               1.000      0.000    999.000    999.000
+    HLS5               1.000      0.000    999.000    999.000
+    HLS6               1.000      0.000    999.000    999.000
+    HLS7               1.000      0.000    999.000    999.000
+    HLS8               1.000      0.000    999.000    999.000
+    HLS9               1.000      0.000    999.000    999.000
+    HLS10              1.000      0.000    999.000    999.000
+
+ HAR1     BY
+    HLS1               1.000      0.000    999.000    999.000
+
+ HAR2     BY
+    HLS2               1.000      0.000    999.000    999.000
+
+ HAR3     BY
+    HLS3               1.000      0.000    999.000    999.000
+
+ HAR4     BY
+    HLS4               1.000      0.000    999.000    999.000
+
+ HAR5     BY
+    HLS5               1.000      0.000    999.000    999.000
+
+ HAR6     BY
+    HLS6               1.000      0.000    999.000    999.000
+
+ HAR7     BY
+    HLS7               1.000      0.000    999.000    999.000
+
+ HAR8     BY
+    HLS8               1.000      0.000    999.000    999.000
+
+ HAR9     BY
+    HLS9               1.000      0.000    999.000    999.000
+
+ HAR10    BY
+    HLS10              1.000      0.000    999.000    999.000
+
+ WTRAIT   BY
+    WLS1               1.000      0.000    999.000    999.000
+    WLS2               1.000      0.000    999.000    999.000
+    WLS3               1.000      0.000    999.000    999.000
+    WLS4               1.000      0.000    999.000    999.000
+    WLS5               1.000      0.000    999.000    999.000
+    WLS6               1.000      0.000    999.000    999.000
+    WLS7               1.000      0.000    999.000    999.000
+    WLS8               1.000      0.000    999.000    999.000
+    WLS9               1.000      0.000    999.000    999.000
+    WLS10              1.000      0.000    999.000    999.000
+
+ WAR1     BY
+    WLS1               1.000      0.000    999.000    999.000
+
+ WAR2     BY
+    WLS2               1.000      0.000    999.000    999.000
+
+ WAR3     BY
+    WLS3               1.000      0.000    999.000    999.000
+
+ WAR4     BY
+    WLS4               1.000      0.000    999.000    999.000
+
+ WAR5     BY
+    WLS5               1.000      0.000    999.000    999.000
+
+ WAR6     BY
+    WLS6               1.000      0.000    999.000    999.000
+
+ WAR7     BY
+    WLS7               1.000      0.000    999.000    999.000
+
+ WAR8     BY
+    WLS8               1.000      0.000    999.000    999.000
+
+ WAR9     BY
+    WLS9               1.000      0.000    999.000    999.000
+
+ WAR10    BY
+    WLS10              1.000      0.000    999.000    999.000
+
+ HAR2     ON
+    HAR1               0.901      0.025     36.559      0.000
+
+ HAR3     ON
+    HAR2               0.901      0.025     36.559      0.000
+
+ HAR4     ON
+    HAR3               0.901      0.025     36.559      0.000
+
+ HAR5     ON
+    HAR4               0.901      0.025     36.559      0.000
+
+ HAR6     ON
+    HAR5               0.901      0.025     36.559      0.000
+
+ HAR7     ON
+    HAR6               0.901      0.025     36.559      0.000
+
+ HAR8     ON
+    HAR7               0.901      0.025     36.559      0.000
+
+ HAR9     ON
+    HAR8               0.901      0.025     36.559      0.000
+
+ HAR10    ON
+    HAR9               0.901      0.025     36.559      0.000
+
+ WAR2     ON
+    WAR1               0.855      0.026     32.685      0.000
+
+ WAR3     ON
+    WAR2               0.855      0.026     32.685      0.000
+
+ WAR4     ON
+    WAR3               0.855      0.026     32.685      0.000
+
+ WAR5     ON
+    WAR4               0.855      0.026     32.685      0.000
+
+ WAR6     ON
+    WAR5               0.855      0.026     32.685      0.000
+
+ WAR7     ON
+    WAR6               0.855      0.026     32.685      0.000
+
+ WAR8     ON
+    WAR7               0.855      0.026     32.685      0.000
+
+ WAR9     ON
+    WAR8               0.855      0.026     32.685      0.000
+
+ WAR10    ON
+    WAR9               0.855      0.026     32.685      0.000
+
+ HTRAIT   WITH
+    WTRAIT             1.745      0.158     11.036      0.000
+
+ HAR1     WITH
+    WAR1               0.476      0.171      2.791      0.005
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HAR2     WITH
+    WAR2               0.210      0.028      7.432      0.000
+
+ HAR3     WITH
+    WAR3               0.210      0.028      7.432      0.000
+
+ HAR4     WITH
+    WAR4               0.210      0.028      7.432      0.000
+
+ HAR5     WITH
+    WAR5               0.210      0.028      7.432      0.000
+
+ HAR6     WITH
+    WAR6               0.210      0.028      7.432      0.000
+
+ HAR7     WITH
+    WAR7               0.210      0.028      7.432      0.000
+
+ HAR8     WITH
+    WAR8               0.210      0.028      7.432      0.000
+
+ HAR9     WITH
+    WAR9               0.210      0.028      7.432      0.000
+
+ HAR10    WITH
+    WAR10              0.210      0.028      7.432      0.000
+
+ WAR1     WITH
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HLS1     WITH
+    WLS1               0.105      0.030      3.480      0.001
+
+ HLS2     WITH
+    WLS2               0.105      0.030      3.480      0.001
+
+ HLS3     WITH
+    WLS3               0.105      0.030      3.480      0.001
+
+ HLS4     WITH
+    WLS4               0.105      0.030      3.480      0.001
+
+ HLS5     WITH
+    WLS5               0.105      0.030      3.480      0.001
+
+ HLS6     WITH
+    WLS6               0.105      0.030      3.480      0.001
+
+ HLS7     WITH
+    WLS7               0.105      0.030      3.480      0.001
+
+ HLS8     WITH
+    WLS8               0.105      0.030      3.480      0.001
+
+ HLS9     WITH
+    WLS9               0.105      0.030      3.480      0.001
+
+ HLS10    WITH
+    WLS10              0.105      0.030      3.480      0.001
+
+ Intercepts
+    HLS1               6.821      0.052    131.652      0.000
+    WLS1               6.824      0.053    128.103      0.000
+    HLS2               6.793      0.054    126.604      0.000
+    WLS2               6.605      0.056    118.769      0.000
+    HLS3               6.926      0.055    126.841      0.000
+    WLS3               6.761      0.057    119.552      0.000
+    HLS4               6.977      0.056    125.076      0.000
+    WLS4               6.920      0.058    120.256      0.000
+    HLS5               7.030      0.057    124.084      0.000
+    WLS5               6.859      0.059    116.841      0.000
+    HLS6               7.050      0.057    123.402      0.000
+    WLS6               6.908      0.059    117.198      0.000
+    HLS7               7.167      0.058    122.850      0.000
+    WLS7               7.051      0.060    117.630      0.000
+    HLS8               7.157      0.060    120.011      0.000
+    WLS8               7.079      0.061    115.188      0.000
+    HLS9               7.055      0.059    120.317      0.000
+    WLS9               6.976      0.060    115.700      0.000
+    HLS10              7.054      0.060    118.130      0.000
+    WLS10              7.002      0.061    114.136      0.000
+
+ Variances
+    HTRAIT             1.859      0.643      2.893      0.004
+    HAR1               3.329      0.617      5.394      0.000
+    WTRAIT             2.418      0.360      6.723      0.000
+    WAR1               2.790      0.322      8.659      0.000
+
+ Residual Variances
+    HLS1               1.803      0.047     38.318      0.000
+    WLS1               1.911      0.056     34.343      0.000
+    HLS2               1.803      0.047     38.318      0.000
+    WLS2               1.911      0.056     34.343      0.000
+    HLS3               1.803      0.047     38.318      0.000
+    WLS3               1.911      0.056     34.343      0.000
+    HLS4               1.803      0.047     38.318      0.000
+    WLS4               1.911      0.056     34.343      0.000
+    HLS5               1.803      0.047     38.318      0.000
+    WLS5               1.911      0.056     34.343      0.000
+    HLS6               1.803      0.047     38.318      0.000
+    WLS6               1.911      0.056     34.343      0.000
+    HLS7               1.803      0.047     38.318      0.000
+    WLS7               1.911      0.056     34.343      0.000
+    HLS8               1.803      0.047     38.318      0.000
+    WLS8               1.911      0.056     34.343      0.000
+    HLS9               1.803      0.047     38.318      0.000
+    WLS9               1.911      0.056     34.343      0.000
+    HLS10              1.803      0.047     38.318      0.000
+    WLS10              1.911      0.056     34.343      0.000
+    HAR2               0.625      0.049     12.844      0.000
+    HAR3               0.625      0.049     12.844      0.000
+    HAR4               0.625      0.049     12.844      0.000
+    HAR5               0.625      0.049     12.844      0.000
+    HAR6               0.625      0.049     12.844      0.000
+    HAR7               0.625      0.049     12.844      0.000
+    HAR8               0.625      0.049     12.844      0.000
+    HAR9               0.625      0.049     12.844      0.000
+    HAR10              0.625      0.049     12.844      0.000
+    WAR2               0.751      0.060     12.556      0.000
+    WAR3               0.751      0.060     12.556      0.000
+    WAR4               0.751      0.060     12.556      0.000
+    WAR5               0.751      0.060     12.556      0.000
+    WAR6               0.751      0.060     12.556      0.000
+    WAR7               0.751      0.060     12.556      0.000
+    WAR8               0.751      0.060     12.556      0.000
+    WAR9               0.751      0.060     12.556      0.000
+    WAR10              0.751      0.060     12.556      0.000
+
+ New/Additional Parameters
+    TSIM               0.823      0.143      5.755      0.000
+    ISIM               0.156      0.052      3.014      0.003
+    NSIM               0.069      0.014      4.994      0.000
+    ESIM               0.057      0.016      3.546      0.000
+    HREL               0.742      0.008     88.721      0.000
+    WREL               0.732      0.009     78.617      0.000
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ HTRAIT   BY
+    HLS1               0.516      0.089      5.822      0.000
+    HLS2               0.516      0.089      5.822      0.000
+    HLS3               0.516      0.089      5.822      0.000
+    HLS4               0.516      0.089      5.822      0.000
+    HLS5               0.516      0.089      5.822      0.000
+    HLS6               0.516      0.089      5.822      0.000
+    HLS7               0.516      0.089      5.822      0.000
+    HLS8               0.516      0.089      5.822      0.000
+    HLS9               0.516      0.089      5.822      0.000
+    HLS10              0.516      0.089      5.822      0.000
+
+ HAR1     BY
+    HLS1               0.690      0.064     10.819      0.000
+
+ HAR2     BY
+    HLS2               0.690      0.064     10.819      0.000
+
+ HAR3     BY
+    HLS3               0.690      0.064     10.819      0.000
+
+ HAR4     BY
+    HLS4               0.690      0.064     10.819      0.000
+
+ HAR5     BY
+    HLS5               0.690      0.064     10.819      0.000
+
+ HAR6     BY
+    HLS6               0.690      0.064     10.819      0.000
+
+ HAR7     BY
+    HLS7               0.690      0.064     10.819      0.000
+
+ HAR8     BY
+    HLS8               0.690      0.064     10.819      0.000
+
+ HAR9     BY
+    HLS9               0.690      0.064     10.819      0.000
+
+ HAR10    BY
+    HLS10              0.690      0.064     10.819      0.000
+
+ WTRAIT   BY
+    WLS1               0.583      0.042     13.870      0.000
+    WLS2               0.583      0.042     13.870      0.000
+    WLS3               0.583      0.042     13.870      0.000
+    WLS4               0.583      0.042     13.870      0.000
+    WLS5               0.583      0.042     13.870      0.000
+    WLS6               0.583      0.042     13.870      0.000
+    WLS7               0.583      0.042     13.870      0.000
+    WLS8               0.583      0.042     13.870      0.000
+    WLS9               0.583      0.042     13.870      0.000
+    WLS10              0.583      0.042     13.870      0.000
+
+ WAR1     BY
+    WLS1               0.626      0.036     17.374      0.000
+
+ WAR2     BY
+    WLS2               0.626      0.036     17.374      0.000
+
+ WAR3     BY
+    WLS3               0.626      0.036     17.374      0.000
+
+ WAR4     BY
+    WLS4               0.626      0.036     17.374      0.000
+
+ WAR5     BY
+    WLS5               0.626      0.036     17.374      0.000
+
+ WAR6     BY
+    WLS6               0.626      0.036     17.374      0.000
+
+ WAR7     BY
+    WLS7               0.626      0.036     17.374      0.000
+
+ WAR8     BY
+    WLS8               0.626      0.036     17.374      0.000
+
+ WAR9     BY
+    WLS9               0.626      0.036     17.374      0.000
+
+ WAR10    BY
+    WLS10              0.626      0.036     17.374      0.000
+
+ HAR2     ON
+    HAR1               0.901      0.025     36.559      0.000
+
+ HAR3     ON
+    HAR2               0.901      0.025     36.559      0.000
+
+ HAR4     ON
+    HAR3               0.901      0.025     36.559      0.000
+
+ HAR5     ON
+    HAR4               0.901      0.025     36.559      0.000
+
+ HAR6     ON
+    HAR5               0.901      0.025     36.559      0.000
+
+ HAR7     ON
+    HAR6               0.901      0.025     36.559      0.000
+
+ HAR8     ON
+    HAR7               0.901      0.025     36.559      0.000
+
+ HAR9     ON
+    HAR8               0.901      0.025     36.559      0.000
+
+ HAR10    ON
+    HAR9               0.901      0.025     36.559      0.000
+
+ WAR2     ON
+    WAR1               0.855      0.026     32.685      0.000
+
+ WAR3     ON
+    WAR2               0.855      0.026     32.685      0.000
+
+ WAR4     ON
+    WAR3               0.855      0.026     32.685      0.000
+
+ WAR5     ON
+    WAR4               0.855      0.026     32.685      0.000
+
+ WAR6     ON
+    WAR5               0.855      0.026     32.685      0.000
+
+ WAR7     ON
+    WAR6               0.855      0.026     32.685      0.000
+
+ WAR8     ON
+    WAR7               0.855      0.026     32.685      0.000
+
+ WAR9     ON
+    WAR8               0.855      0.026     32.685      0.000
+
+ WAR10    ON
+    WAR9               0.855      0.026     32.685      0.000
+
+ HTRAIT   WITH
+    WTRAIT             0.823      0.143      5.755      0.000
+
+ HAR1     WITH
+    WAR1               0.156      0.052      3.014      0.003
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HAR2     WITH
+    WAR2               0.306      0.036      8.497      0.000
+
+ HAR3     WITH
+    WAR3               0.306      0.036      8.497      0.000
+
+ HAR4     WITH
+    WAR4               0.306      0.036      8.497      0.000
+
+ HAR5     WITH
+    WAR5               0.306      0.036      8.497      0.000
+
+ HAR6     WITH
+    WAR6               0.306      0.036      8.497      0.000
+
+ HAR7     WITH
+    WAR7               0.306      0.036      8.497      0.000
+
+ HAR8     WITH
+    WAR8               0.306      0.036      8.497      0.000
+
+ HAR9     WITH
+    WAR9               0.306      0.036      8.497      0.000
+
+ HAR10    WITH
+    WAR10              0.306      0.036      8.497      0.000
+
+ WAR1     WITH
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HLS1     WITH
+    WLS1               0.057      0.016      3.546      0.000
+
+ HLS2     WITH
+    WLS2               0.057      0.016      3.546      0.000
+
+ HLS3     WITH
+    WLS3               0.057      0.016      3.546      0.000
+
+ HLS4     WITH
+    WLS4               0.057      0.016      3.546      0.000
+
+ HLS5     WITH
+    WLS5               0.057      0.016      3.546      0.000
+
+ HLS6     WITH
+    WLS6               0.057      0.016      3.546      0.000
+
+ HLS7     WITH
+    WLS7               0.057      0.016      3.546      0.000
+
+ HLS8     WITH
+    WLS8               0.057      0.016      3.546      0.000
+
+ HLS9     WITH
+    WLS9               0.057      0.016      3.546      0.000
+
+ HLS10    WITH
+    WLS10              0.057      0.016      3.546      0.000
+
+ Intercepts
+    HLS1               2.580      0.033     79.235      0.000
+    WLS1               2.558      0.033     78.600      0.000
+    HLS2               2.569      0.033     77.741      0.000
+    WLS2               2.476      0.033     76.143      0.000
+    HLS3               2.619      0.034     77.831      0.000
+    WLS3               2.534      0.033     76.411      0.000
+    HLS4               2.639      0.034     77.187      0.000
+    WLS4               2.594      0.034     76.474      0.000
+    HLS5               2.659      0.035     76.839      0.000
+    WLS5               2.571      0.034     75.433      0.000
+    HLS6               2.666      0.035     76.691      0.000
+    WLS6               2.589      0.034     75.649      0.000
+    HLS7               2.711      0.035     76.456      0.000
+    WLS7               2.642      0.035     75.717      0.000
+    HLS8               2.707      0.036     75.607      0.000
+    WLS8               2.653      0.035     74.889      0.000
+    HLS9               2.668      0.035     75.620      0.000
+    WLS9               2.615      0.035     74.967      0.000
+    HLS10              2.668      0.036     75.058      0.000
+    WLS10              2.624      0.035     74.528      0.000
+
+ Variances
+    HTRAIT             1.000      0.000    999.000    999.000
+    HAR1               1.000      0.000    999.000    999.000
+    WTRAIT             1.000      0.000    999.000    999.000
+    WAR1               1.000      0.000    999.000    999.000
+
+ Residual Variances
+    HLS1               0.258      0.008     30.836      0.000
+    WLS1               0.268      0.009     28.845      0.000
+    HLS2               0.258      0.008     30.836      0.000
+    WLS2               0.268      0.009     28.845      0.000
+    HLS3               0.258      0.008     30.836      0.000
+    WLS3               0.268      0.009     28.845      0.000
+    HLS4               0.258      0.008     30.836      0.000
+    WLS4               0.268      0.009     28.845      0.000
+    HLS5               0.258      0.008     30.836      0.000
+    WLS5               0.268      0.009     28.845      0.000
+    HLS6               0.258      0.008     30.836      0.000
+    WLS6               0.268      0.009     28.845      0.000
+    HLS7               0.258      0.008     30.836      0.000
+    WLS7               0.268      0.009     28.845      0.000
+    HLS8               0.258      0.008     30.836      0.000
+    WLS8               0.268      0.009     28.845      0.000
+    HLS9               0.258      0.008     30.836      0.000
+    WLS9               0.268      0.009     28.845      0.000
+    HLS10              0.258      0.008     30.836      0.000
+    WLS10              0.268      0.009     28.845      0.000
+    HAR2               0.188      0.044      4.227      0.000
+    HAR3               0.188      0.044      4.227      0.000
+    HAR4               0.188      0.044      4.227      0.000
+    HAR5               0.188      0.044      4.227      0.000
+    HAR6               0.188      0.044      4.227      0.000
+    HAR7               0.188      0.044      4.227      0.000
+    HAR8               0.188      0.044      4.227      0.000
+    HAR9               0.188      0.044      4.227      0.000
+    HAR10              0.188      0.044      4.227      0.000
+    WAR2               0.269      0.045      6.019      0.000
+    WAR3               0.269      0.045      6.019      0.000
+    WAR4               0.269      0.045      6.019      0.000
+    WAR5               0.269      0.045      6.019      0.000
+    WAR6               0.269      0.045      6.019      0.000
+    WAR7               0.269      0.045      6.019      0.000
+    WAR8               0.269      0.045      6.019      0.000
+    WAR9               0.269      0.045      6.019      0.000
+    WAR10              0.269      0.045      6.019      0.000
+
+
+STDY Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ HTRAIT   BY
+    HLS1               0.516      0.089      5.822      0.000
+    HLS2               0.516      0.089      5.822      0.000
+    HLS3               0.516      0.089      5.822      0.000
+    HLS4               0.516      0.089      5.822      0.000
+    HLS5               0.516      0.089      5.822      0.000
+    HLS6               0.516      0.089      5.822      0.000
+    HLS7               0.516      0.089      5.822      0.000
+    HLS8               0.516      0.089      5.822      0.000
+    HLS9               0.516      0.089      5.822      0.000
+    HLS10              0.516      0.089      5.822      0.000
+
+ HAR1     BY
+    HLS1               0.690      0.064     10.819      0.000
+
+ HAR2     BY
+    HLS2               0.690      0.064     10.819      0.000
+
+ HAR3     BY
+    HLS3               0.690      0.064     10.819      0.000
+
+ HAR4     BY
+    HLS4               0.690      0.064     10.819      0.000
+
+ HAR5     BY
+    HLS5               0.690      0.064     10.819      0.000
+
+ HAR6     BY
+    HLS6               0.690      0.064     10.819      0.000
+
+ HAR7     BY
+    HLS7               0.690      0.064     10.819      0.000
+
+ HAR8     BY
+    HLS8               0.690      0.064     10.819      0.000
+
+ HAR9     BY
+    HLS9               0.690      0.064     10.819      0.000
+
+ HAR10    BY
+    HLS10              0.690      0.064     10.819      0.000
+
+ WTRAIT   BY
+    WLS1               0.583      0.042     13.870      0.000
+    WLS2               0.583      0.042     13.870      0.000
+    WLS3               0.583      0.042     13.870      0.000
+    WLS4               0.583      0.042     13.870      0.000
+    WLS5               0.583      0.042     13.870      0.000
+    WLS6               0.583      0.042     13.870      0.000
+    WLS7               0.583      0.042     13.870      0.000
+    WLS8               0.583      0.042     13.870      0.000
+    WLS9               0.583      0.042     13.870      0.000
+    WLS10              0.583      0.042     13.870      0.000
+
+ WAR1     BY
+    WLS1               0.626      0.036     17.374      0.000
+
+ WAR2     BY
+    WLS2               0.626      0.036     17.374      0.000
+
+ WAR3     BY
+    WLS3               0.626      0.036     17.374      0.000
+
+ WAR4     BY
+    WLS4               0.626      0.036     17.374      0.000
+
+ WAR5     BY
+    WLS5               0.626      0.036     17.374      0.000
+
+ WAR6     BY
+    WLS6               0.626      0.036     17.374      0.000
+
+ WAR7     BY
+    WLS7               0.626      0.036     17.374      0.000
+
+ WAR8     BY
+    WLS8               0.626      0.036     17.374      0.000
+
+ WAR9     BY
+    WLS9               0.626      0.036     17.374      0.000
+
+ WAR10    BY
+    WLS10              0.626      0.036     17.374      0.000
+
+ HAR2     ON
+    HAR1               0.901      0.025     36.559      0.000
+
+ HAR3     ON
+    HAR2               0.901      0.025     36.559      0.000
+
+ HAR4     ON
+    HAR3               0.901      0.025     36.559      0.000
+
+ HAR5     ON
+    HAR4               0.901      0.025     36.559      0.000
+
+ HAR6     ON
+    HAR5               0.901      0.025     36.559      0.000
+
+ HAR7     ON
+    HAR6               0.901      0.025     36.559      0.000
+
+ HAR8     ON
+    HAR7               0.901      0.025     36.559      0.000
+
+ HAR9     ON
+    HAR8               0.901      0.025     36.559      0.000
+
+ HAR10    ON
+    HAR9               0.901      0.025     36.559      0.000
+
+ WAR2     ON
+    WAR1               0.855      0.026     32.685      0.000
+
+ WAR3     ON
+    WAR2               0.855      0.026     32.685      0.000
+
+ WAR4     ON
+    WAR3               0.855      0.026     32.685      0.000
+
+ WAR5     ON
+    WAR4               0.855      0.026     32.685      0.000
+
+ WAR6     ON
+    WAR5               0.855      0.026     32.685      0.000
+
+ WAR7     ON
+    WAR6               0.855      0.026     32.685      0.000
+
+ WAR8     ON
+    WAR7               0.855      0.026     32.685      0.000
+
+ WAR9     ON
+    WAR8               0.855      0.026     32.685      0.000
+
+ WAR10    ON
+    WAR9               0.855      0.026     32.685      0.000
+
+ HTRAIT   WITH
+    WTRAIT             0.823      0.143      5.755      0.000
+
+ HAR1     WITH
+    WAR1               0.156      0.052      3.014      0.003
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HAR2     WITH
+    WAR2               0.306      0.036      8.497      0.000
+
+ HAR3     WITH
+    WAR3               0.306      0.036      8.497      0.000
+
+ HAR4     WITH
+    WAR4               0.306      0.036      8.497      0.000
+
+ HAR5     WITH
+    WAR5               0.306      0.036      8.497      0.000
+
+ HAR6     WITH
+    WAR6               0.306      0.036      8.497      0.000
+
+ HAR7     WITH
+    WAR7               0.306      0.036      8.497      0.000
+
+ HAR8     WITH
+    WAR8               0.306      0.036      8.497      0.000
+
+ HAR9     WITH
+    WAR9               0.306      0.036      8.497      0.000
+
+ HAR10    WITH
+    WAR10              0.306      0.036      8.497      0.000
+
+ WAR1     WITH
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HLS1     WITH
+    WLS1               0.057      0.016      3.546      0.000
+
+ HLS2     WITH
+    WLS2               0.057      0.016      3.546      0.000
+
+ HLS3     WITH
+    WLS3               0.057      0.016      3.546      0.000
+
+ HLS4     WITH
+    WLS4               0.057      0.016      3.546      0.000
+
+ HLS5     WITH
+    WLS5               0.057      0.016      3.546      0.000
+
+ HLS6     WITH
+    WLS6               0.057      0.016      3.546      0.000
+
+ HLS7     WITH
+    WLS7               0.057      0.016      3.546      0.000
+
+ HLS8     WITH
+    WLS8               0.057      0.016      3.546      0.000
+
+ HLS9     WITH
+    WLS9               0.057      0.016      3.546      0.000
+
+ HLS10    WITH
+    WLS10              0.057      0.016      3.546      0.000
+
+ Intercepts
+    HLS1               2.580      0.033     79.235      0.000
+    WLS1               2.558      0.033     78.600      0.000
+    HLS2               2.569      0.033     77.741      0.000
+    WLS2               2.476      0.033     76.143      0.000
+    HLS3               2.619      0.034     77.831      0.000
+    WLS3               2.534      0.033     76.411      0.000
+    HLS4               2.639      0.034     77.187      0.000
+    WLS4               2.594      0.034     76.474      0.000
+    HLS5               2.659      0.035     76.839      0.000
+    WLS5               2.571      0.034     75.433      0.000
+    HLS6               2.666      0.035     76.691      0.000
+    WLS6               2.589      0.034     75.649      0.000
+    HLS7               2.711      0.035     76.456      0.000
+    WLS7               2.642      0.035     75.717      0.000
+    HLS8               2.707      0.036     75.607      0.000
+    WLS8               2.653      0.035     74.889      0.000
+    HLS9               2.668      0.035     75.620      0.000
+    WLS9               2.615      0.035     74.967      0.000
+    HLS10              2.668      0.036     75.058      0.000
+    WLS10              2.624      0.035     74.528      0.000
+
+ Variances
+    HTRAIT             1.000      0.000    999.000    999.000
+    HAR1               1.000      0.000    999.000    999.000
+    WTRAIT             1.000      0.000    999.000    999.000
+    WAR1               1.000      0.000    999.000    999.000
+
+ Residual Variances
+    HLS1               0.258      0.008     30.836      0.000
+    WLS1               0.268      0.009     28.845      0.000
+    HLS2               0.258      0.008     30.836      0.000
+    WLS2               0.268      0.009     28.845      0.000
+    HLS3               0.258      0.008     30.836      0.000
+    WLS3               0.268      0.009     28.845      0.000
+    HLS4               0.258      0.008     30.836      0.000
+    WLS4               0.268      0.009     28.845      0.000
+    HLS5               0.258      0.008     30.836      0.000
+    WLS5               0.268      0.009     28.845      0.000
+    HLS6               0.258      0.008     30.836      0.000
+    WLS6               0.268      0.009     28.845      0.000
+    HLS7               0.258      0.008     30.836      0.000
+    WLS7               0.268      0.009     28.845      0.000
+    HLS8               0.258      0.008     30.836      0.000
+    WLS8               0.268      0.009     28.845      0.000
+    HLS9               0.258      0.008     30.836      0.000
+    WLS9               0.268      0.009     28.845      0.000
+    HLS10              0.258      0.008     30.836      0.000
+    WLS10              0.268      0.009     28.845      0.000
+    HAR2               0.188      0.044      4.227      0.000
+    HAR3               0.188      0.044      4.227      0.000
+    HAR4               0.188      0.044      4.227      0.000
+    HAR5               0.188      0.044      4.227      0.000
+    HAR6               0.188      0.044      4.227      0.000
+    HAR7               0.188      0.044      4.227      0.000
+    HAR8               0.188      0.044      4.227      0.000
+    HAR9               0.188      0.044      4.227      0.000
+    HAR10              0.188      0.044      4.227      0.000
+    WAR2               0.269      0.045      6.019      0.000
+    WAR3               0.269      0.045      6.019      0.000
+    WAR4               0.269      0.045      6.019      0.000
+    WAR5               0.269      0.045      6.019      0.000
+    WAR6               0.269      0.045      6.019      0.000
+    WAR7               0.269      0.045      6.019      0.000
+    WAR8               0.269      0.045      6.019      0.000
+    WAR9               0.269      0.045      6.019      0.000
+    WAR10              0.269      0.045      6.019      0.000
+
+
+STD Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ HTRAIT   BY
+    HLS1               1.364      0.236      5.786      0.000
+    HLS2               1.364      0.236      5.786      0.000
+    HLS3               1.364      0.236      5.786      0.000
+    HLS4               1.364      0.236      5.786      0.000
+    HLS5               1.364      0.236      5.786      0.000
+    HLS6               1.364      0.236      5.786      0.000
+    HLS7               1.364      0.236      5.786      0.000
+    HLS8               1.364      0.236      5.786      0.000
+    HLS9               1.364      0.236      5.786      0.000
+    HLS10              1.364      0.236      5.786      0.000
+
+ HAR1     BY
+    HLS1               1.825      0.169     10.787      0.000
+
+ HAR2     BY
+    HLS2               1.825      0.169     10.787      0.000
+
+ HAR3     BY
+    HLS3               1.825      0.169     10.787      0.000
+
+ HAR4     BY
+    HLS4               1.825      0.169     10.787      0.000
+
+ HAR5     BY
+    HLS5               1.825      0.169     10.787      0.000
+
+ HAR6     BY
+    HLS6               1.825      0.169     10.787      0.000
+
+ HAR7     BY
+    HLS7               1.825      0.169     10.787      0.000
+
+ HAR8     BY
+    HLS8               1.825      0.169     10.787      0.000
+
+ HAR9     BY
+    HLS9               1.825      0.169     10.787      0.000
+
+ HAR10    BY
+    HLS10              1.825      0.169     10.787      0.000
+
+ WTRAIT   BY
+    WLS1               1.555      0.116     13.446      0.000
+    WLS2               1.555      0.116     13.446      0.000
+    WLS3               1.555      0.116     13.446      0.000
+    WLS4               1.555      0.116     13.446      0.000
+    WLS5               1.555      0.116     13.446      0.000
+    WLS6               1.555      0.116     13.446      0.000
+    WLS7               1.555      0.116     13.446      0.000
+    WLS8               1.555      0.116     13.446      0.000
+    WLS9               1.555      0.116     13.446      0.000
+    WLS10              1.555      0.116     13.446      0.000
+
+ WAR1     BY
+    WLS1               1.670      0.096     17.318      0.000
+
+ WAR2     BY
+    WLS2               1.670      0.096     17.318      0.000
+
+ WAR3     BY
+    WLS3               1.670      0.096     17.318      0.000
+
+ WAR4     BY
+    WLS4               1.670      0.096     17.318      0.000
+
+ WAR5     BY
+    WLS5               1.670      0.096     17.318      0.000
+
+ WAR6     BY
+    WLS6               1.670      0.096     17.318      0.000
+
+ WAR7     BY
+    WLS7               1.670      0.096     17.318      0.000
+
+ WAR8     BY
+    WLS8               1.670      0.096     17.318      0.000
+
+ WAR9     BY
+    WLS9               1.670      0.096     17.318      0.000
+
+ WAR10    BY
+    WLS10              1.670      0.096     17.318      0.000
+
+ HAR2     ON
+    HAR1               0.901      0.025     36.559      0.000
+
+ HAR3     ON
+    HAR2               0.901      0.025     36.559      0.000
+
+ HAR4     ON
+    HAR3               0.901      0.025     36.559      0.000
+
+ HAR5     ON
+    HAR4               0.901      0.025     36.559      0.000
+
+ HAR6     ON
+    HAR5               0.901      0.025     36.559      0.000
+
+ HAR7     ON
+    HAR6               0.901      0.025     36.559      0.000
+
+ HAR8     ON
+    HAR7               0.901      0.025     36.559      0.000
+
+ HAR9     ON
+    HAR8               0.901      0.025     36.559      0.000
+
+ HAR10    ON
+    HAR9               0.901      0.025     36.559      0.000
+
+ WAR2     ON
+    WAR1               0.855      0.026     32.685      0.000
+
+ WAR3     ON
+    WAR2               0.855      0.026     32.685      0.000
+
+ WAR4     ON
+    WAR3               0.855      0.026     32.685      0.000
+
+ WAR5     ON
+    WAR4               0.855      0.026     32.685      0.000
+
+ WAR6     ON
+    WAR5               0.855      0.026     32.685      0.000
+
+ WAR7     ON
+    WAR6               0.855      0.026     32.685      0.000
+
+ WAR8     ON
+    WAR7               0.855      0.026     32.685      0.000
+
+ WAR9     ON
+    WAR8               0.855      0.026     32.685      0.000
+
+ WAR10    ON
+    WAR9               0.855      0.026     32.685      0.000
+
+ HTRAIT   WITH
+    WTRAIT             0.823      0.143      5.755      0.000
+
+ HAR1     WITH
+    WAR1               0.156      0.052      3.014      0.003
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HAR2     WITH
+    WAR2               0.306      0.036      8.497      0.000
+
+ HAR3     WITH
+    WAR3               0.306      0.036      8.497      0.000
+
+ HAR4     WITH
+    WAR4               0.306      0.036      8.497      0.000
+
+ HAR5     WITH
+    WAR5               0.306      0.036      8.497      0.000
+
+ HAR6     WITH
+    WAR6               0.306      0.036      8.497      0.000
+
+ HAR7     WITH
+    WAR7               0.306      0.036      8.497      0.000
+
+ HAR8     WITH
+    WAR8               0.306      0.036      8.497      0.000
+
+ HAR9     WITH
+    WAR9               0.306      0.036      8.497      0.000
+
+ HAR10    WITH
+    WAR10              0.306      0.036      8.497      0.000
+
+ WAR1     WITH
+    HTRAIT             0.000      0.000    999.000    999.000
+    WTRAIT             0.000      0.000    999.000    999.000
+
+ HLS1     WITH
+    WLS1               0.105      0.030      3.480      0.001
+
+ HLS2     WITH
+    WLS2               0.105      0.030      3.480      0.001
+
+ HLS3     WITH
+    WLS3               0.105      0.030      3.480      0.001
+
+ HLS4     WITH
+    WLS4               0.105      0.030      3.480      0.001
+
+ HLS5     WITH
+    WLS5               0.105      0.030      3.480      0.001
+
+ HLS6     WITH
+    WLS6               0.105      0.030      3.480      0.001
+
+ HLS7     WITH
+    WLS7               0.105      0.030      3.480      0.001
+
+ HLS8     WITH
+    WLS8               0.105      0.030      3.480      0.001
+
+ HLS9     WITH
+    WLS9               0.105      0.030      3.480      0.001
+
+ HLS10    WITH
+    WLS10              0.105      0.030      3.480      0.001
+
+ Intercepts
+    HLS1               6.821      0.052    131.652      0.000
+    WLS1               6.824      0.053    128.103      0.000
+    HLS2               6.793      0.054    126.604      0.000
+    WLS2               6.605      0.056    118.769      0.000
+    HLS3               6.926      0.055    126.841      0.000
+    WLS3               6.761      0.057    119.552      0.000
+    HLS4               6.977      0.056    125.076      0.000
+    WLS4               6.920      0.058    120.256      0.000
+    HLS5               7.030      0.057    124.084      0.000
+    WLS5               6.859      0.059    116.841      0.000
+    HLS6               7.050      0.057    123.402      0.000
+    WLS6               6.908      0.059    117.198      0.000
+    HLS7               7.167      0.058    122.850      0.000
+    WLS7               7.051      0.060    117.630      0.000
+    HLS8               7.157      0.060    120.011      0.000
+    WLS8               7.079      0.061    115.188      0.000
+    HLS9               7.055      0.059    120.317      0.000
+    WLS9               6.976      0.060    115.700      0.000
+    HLS10              7.054      0.060    118.130      0.000
+    WLS10              7.002      0.061    114.136      0.000
+
+ Variances
+    HTRAIT             1.000      0.000    999.000    999.000
+    HAR1               1.000      0.000    999.000    999.000
+    WTRAIT             1.000      0.000    999.000    999.000
+    WAR1               1.000      0.000    999.000    999.000
+
+ Residual Variances
+    HLS1               1.803      0.047     38.318      0.000
+    WLS1               1.911      0.056     34.343      0.000
+    HLS2               1.803      0.047     38.318      0.000
+    WLS2               1.911      0.056     34.343      0.000
+    HLS3               1.803      0.047     38.318      0.000
+    WLS3               1.911      0.056     34.343      0.000
+    HLS4               1.803      0.047     38.318      0.000
+    WLS4               1.911      0.056     34.343      0.000
+    HLS5               1.803      0.047     38.318      0.000
+    WLS5               1.911      0.056     34.343      0.000
+    HLS6               1.803      0.047     38.318      0.000
+    WLS6               1.911      0.056     34.343      0.000
+    HLS7               1.803      0.047     38.318      0.000
+    WLS7               1.911      0.056     34.343      0.000
+    HLS8               1.803      0.047     38.318      0.000
+    WLS8               1.911      0.056     34.343      0.000
+    HLS9               1.803      0.047     38.318      0.000
+    WLS9               1.911      0.056     34.343      0.000
+    HLS10              1.803      0.047     38.318      0.000
+    WLS10              1.911      0.056     34.343      0.000
+    HAR2               0.188      0.044      4.227      0.000
+    HAR3               0.188      0.044      4.227      0.000
+    HAR4               0.188      0.044      4.227      0.000
+    HAR5               0.188      0.044      4.227      0.000
+    HAR6               0.188      0.044      4.227      0.000
+    HAR7               0.188      0.044      4.227      0.000
+    HAR8               0.188      0.044      4.227      0.000
+    HAR9               0.188      0.044      4.227      0.000
+    HAR10              0.188      0.044      4.227      0.000
+    WAR2               0.269      0.045      6.019      0.000
+    WAR3               0.269      0.045      6.019      0.000
+    WAR4               0.269      0.045      6.019      0.000
+    WAR5               0.269      0.045      6.019      0.000
+    WAR6               0.269      0.045      6.019      0.000
+    WAR7               0.269      0.045      6.019      0.000
+    WAR8               0.269      0.045      6.019      0.000
+    WAR9               0.269      0.045      6.019      0.000
+    WAR10              0.269      0.045      6.019      0.000
+
+
+R-SQUARE
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    HLS1               0.742      0.008     88.721      0.000
+    WLS1               0.732      0.009     78.617      0.000
+    HLS2               0.742      0.008     88.721      0.000
+    WLS2               0.732      0.009     78.617      0.000
+    HLS3               0.742      0.008     88.721      0.000
+    WLS3               0.732      0.009     78.617      0.000
+    HLS4               0.742      0.008     88.721      0.000
+    WLS4               0.732      0.009     78.617      0.000
+    HLS5               0.742      0.008     88.721      0.000
+    WLS5               0.732      0.009     78.617      0.000
+    HLS6               0.742      0.008     88.721      0.000
+    WLS6               0.732      0.009     78.617      0.000
+    HLS7               0.742      0.008     88.721      0.000
+    WLS7               0.732      0.009     78.617      0.000
+    HLS8               0.742      0.008     88.721      0.000
+    WLS8               0.732      0.009     78.617      0.000
+    HLS9               0.742      0.008     88.721      0.000
+    WLS9               0.732      0.009     78.617      0.000
+    HLS10              0.742      0.008     88.721      0.000
+    WLS10              0.732      0.009     78.617      0.000
+
+     Latent                                         Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    HAR2               0.812      0.044     18.280      0.000
+    HAR3               0.812      0.044     18.280      0.000
+    HAR4               0.812      0.044     18.280      0.000
+    HAR5               0.812      0.044     18.280      0.000
+    HAR6               0.812      0.044     18.280      0.000
+    HAR7               0.812      0.044     18.280      0.000
+    HAR8               0.812      0.044     18.280      0.000
+    HAR9               0.812      0.044     18.280      0.000
+    HAR10              0.812      0.044     18.280      0.000
+    WAR2               0.731      0.045     16.343      0.000
+    WAR3               0.731      0.045     16.343      0.000
+    WAR4               0.731      0.045     16.343      0.000
+    WAR5               0.731      0.045     16.343      0.000
+    WAR6               0.731      0.045     16.343      0.000
+    WAR7               0.731      0.045     16.343      0.000
+    WAR8               0.731      0.045     16.343      0.000
+    WAR9               0.731      0.045     16.343      0.000
+    WAR10              0.731      0.045     16.343      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.170E-04
+       (ratio of smallest to largest eigenvalue)
+
+
+CONFIDENCE INTERVALS OF MODEL RESULTS
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ HTRAIT   BY
+    HLS1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS2             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS3             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS4             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS5             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS6             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS7             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS8             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS9             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HLS10            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR1     BY
+    HLS1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR2     BY
+    HLS2             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR3     BY
+    HLS3             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR4     BY
+    HLS4             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR5     BY
+    HLS5             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR6     BY
+    HLS6             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR7     BY
+    HLS7             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR8     BY
+    HLS8             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR9     BY
+    HLS9             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR10    BY
+    HLS10            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WTRAIT   BY
+    WLS1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS2             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS3             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS4             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS5             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS6             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS7             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS8             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS9             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WLS10            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR1     BY
+    WLS1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR2     BY
+    WLS2             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR3     BY
+    WLS3             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR4     BY
+    WLS4             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR5     BY
+    WLS5             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR6     BY
+    WLS6             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR7     BY
+    WLS7             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR8     BY
+    WLS8             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR9     BY
+    WLS9             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ WAR10    BY
+    WLS10            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ HAR2     ON
+    HAR1             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR3     ON
+    HAR2             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR4     ON
+    HAR3             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR5     ON
+    HAR4             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR6     ON
+    HAR5             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR7     ON
+    HAR6             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR8     ON
+    HAR7             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR9     ON
+    HAR8             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR10    ON
+    HAR9             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ WAR2     ON
+    WAR1             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR3     ON
+    WAR2             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR4     ON
+    WAR3             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR5     ON
+    WAR4             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR6     ON
+    WAR5             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR7     ON
+    WAR6             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR8     ON
+    WAR7             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR9     ON
+    WAR8             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR10    ON
+    WAR9             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ HTRAIT   WITH
+    WTRAIT           1.338       1.435       1.485       1.745       2.005       2.055       2.153
+
+ HAR1     WITH
+    WAR1             0.037       0.142       0.195       0.476       0.757       0.810       0.915
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HAR2     WITH
+    WAR2             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR3     WITH
+    WAR3             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR4     WITH
+    WAR4             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR5     WITH
+    WAR5             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR6     WITH
+    WAR6             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR7     WITH
+    WAR7             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR8     WITH
+    WAR8             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR9     WITH
+    WAR9             0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ HAR10    WITH
+    WAR10            0.137       0.155       0.164       0.210       0.256       0.265       0.283
+
+ WAR1     WITH
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HLS1     WITH
+    WLS1             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS2     WITH
+    WLS2             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS3     WITH
+    WLS3             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS4     WITH
+    WLS4             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS5     WITH
+    WLS5             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS6     WITH
+    WLS6             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS7     WITH
+    WLS7             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS8     WITH
+    WLS8             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS9     WITH
+    WLS9             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS10    WITH
+    WLS10            0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ Intercepts
+    HLS1             6.688       6.720       6.736       6.821       6.906       6.923       6.955
+    WLS1             6.687       6.720       6.737       6.824       6.912       6.929       6.962
+    HLS2             6.655       6.688       6.704       6.793       6.881       6.898       6.931
+    WLS2             6.462       6.496       6.514       6.605       6.697       6.714       6.748
+    HLS3             6.785       6.819       6.836       6.926       7.016       7.033       7.066
+    WLS3             6.615       6.650       6.668       6.761       6.854       6.872       6.907
+    HLS4             6.834       6.868       6.886       6.977       7.069       7.087       7.121
+    WLS4             6.772       6.807       6.825       6.920       7.015       7.033       7.068
+    HLS5             6.884       6.919       6.937       7.030       7.123       7.141       7.176
+    WLS5             6.708       6.744       6.762       6.859       6.955       6.974       7.010
+    HLS6             6.902       6.938       6.956       7.050       7.144       7.162       7.197
+    WLS6             6.757       6.793       6.811       6.908       7.005       7.024       7.060
+    HLS7             7.017       7.053       7.071       7.167       7.263       7.282       7.318
+    WLS7             6.896       6.933       6.952       7.051       7.149       7.168       7.205
+    HLS8             7.003       7.040       7.059       7.157       7.255       7.274       7.310
+    WLS8             6.921       6.959       6.978       7.079       7.181       7.200       7.238
+    HLS9             6.904       6.940       6.959       7.055       7.152       7.170       7.206
+    WLS9             6.821       6.858       6.877       6.976       7.075       7.094       7.131
+    HLS10            6.900       6.937       6.956       7.054       7.152       7.171       7.208
+    WLS10            6.844       6.882       6.901       7.002       7.103       7.123       7.160
+
+ Variances
+    HTRAIT           0.204       0.599       0.802       1.859       2.916       3.119       3.515
+    HAR1             1.739       2.119       2.314       3.329       4.344       4.539       4.919
+    WTRAIT           1.491       1.713       1.826       2.418       3.009       3.123       3.344
+    WAR1             1.960       2.159       2.260       2.790       3.321       3.422       3.620
+
+ Residual Variances
+    HLS1             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS1             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS2             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS2             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS3             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS3             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS4             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS4             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS5             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS5             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS6             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS6             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS7             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS7             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS8             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS8             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS9             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS9             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS10            1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS10            1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HAR2             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR3             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR4             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR5             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR6             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR7             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR8             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR9             0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    HAR10            0.500       0.530       0.545       0.625       0.705       0.721       0.751
+    WAR2             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR3             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR4             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR5             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR6             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR7             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR8             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR9             0.597       0.634       0.653       0.751       0.849       0.868       0.905
+    WAR10            0.597       0.634       0.653       0.751       0.849       0.868       0.905
+
+ New/Additional Parameters
+    TSIM             0.455       0.543       0.588       0.823       1.058       1.104       1.192
+    ISIM             0.023       0.055       0.071       0.156       0.241       0.258       0.290
+    NSIM             0.033       0.042       0.046       0.069       0.092       0.096       0.104
+    ESIM             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+    HREL             0.721       0.726       0.728       0.742       0.756       0.758       0.764
+    WREL             0.708       0.713       0.716       0.732       0.747       0.750       0.756
+
+
+CONFIDENCE INTERVALS OF STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ HTRAIT   BY
+    HLS1             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS2             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS3             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS4             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS5             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS6             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS7             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS8             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS9             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS10            0.288       0.342       0.370       0.516       0.661       0.689       0.744
+
+ HAR1     BY
+    HLS1             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR2     BY
+    HLS2             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR3     BY
+    HLS3             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR4     BY
+    HLS4             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR5     BY
+    HLS5             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR6     BY
+    HLS6             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR7     BY
+    HLS7             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR8     BY
+    HLS8             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR9     BY
+    HLS9             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR10    BY
+    HLS10            0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ WTRAIT   BY
+    WLS1             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS2             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS3             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS4             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS5             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS6             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS7             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS8             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS9             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS10            0.475       0.500       0.514       0.583       0.652       0.665       0.691
+
+ WAR1     BY
+    WLS1             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR2     BY
+    WLS2             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR3     BY
+    WLS3             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR4     BY
+    WLS4             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR5     BY
+    WLS5             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR6     BY
+    WLS6             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR7     BY
+    WLS7             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR8     BY
+    WLS8             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR9     BY
+    WLS9             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR10    BY
+    WLS10            0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ HAR2     ON
+    HAR1             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR3     ON
+    HAR2             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR4     ON
+    HAR3             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR5     ON
+    HAR4             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR6     ON
+    HAR5             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR7     ON
+    HAR6             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR8     ON
+    HAR7             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR9     ON
+    HAR8             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR10    ON
+    HAR9             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ WAR2     ON
+    WAR1             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR3     ON
+    WAR2             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR4     ON
+    WAR3             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR5     ON
+    WAR4             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR6     ON
+    WAR5             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR7     ON
+    WAR6             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR8     ON
+    WAR7             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR9     ON
+    WAR8             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR10    ON
+    WAR9             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ HTRAIT   WITH
+    WTRAIT           0.455       0.543       0.588       0.823       1.058       1.104       1.192
+
+ HAR1     WITH
+    WAR1             0.023       0.055       0.071       0.156       0.241       0.258       0.290
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HAR2     WITH
+    WAR2             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR3     WITH
+    WAR3             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR4     WITH
+    WAR4             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR5     WITH
+    WAR5             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR6     WITH
+    WAR6             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR7     WITH
+    WAR7             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR8     WITH
+    WAR8             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR9     WITH
+    WAR9             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR10    WITH
+    WAR10            0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ WAR1     WITH
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HLS1     WITH
+    WLS1             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS2     WITH
+    WLS2             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS3     WITH
+    WLS3             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS4     WITH
+    WLS4             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS5     WITH
+    WLS5             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS6     WITH
+    WLS6             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS7     WITH
+    WLS7             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS8     WITH
+    WLS8             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS9     WITH
+    WLS9             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS10    WITH
+    WLS10            0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ Intercepts
+    HLS1             2.496       2.516       2.526       2.580       2.633       2.644       2.664
+    WLS1             2.474       2.494       2.504       2.558       2.611       2.621       2.642
+    HLS2             2.484       2.504       2.515       2.569       2.623       2.634       2.654
+    WLS2             2.392       2.412       2.422       2.476       2.529       2.539       2.559
+    HLS3             2.533       2.553       2.564       2.619       2.675       2.685       2.706
+    WLS3             2.448       2.469       2.479       2.534       2.588       2.599       2.619
+    HLS4             2.551       2.572       2.583       2.639       2.695       2.706       2.727
+    WLS4             2.506       2.527       2.538       2.594       2.649       2.660       2.681
+    HLS5             2.570       2.591       2.602       2.659       2.716       2.726       2.748
+    WLS5             2.483       2.504       2.515       2.571       2.627       2.637       2.658
+    HLS6             2.577       2.598       2.609       2.666       2.723       2.734       2.756
+    WLS6             2.501       2.522       2.533       2.589       2.645       2.656       2.677
+    HLS7             2.619       2.641       2.652       2.711       2.769       2.780       2.802
+    WLS7             2.553       2.574       2.585       2.642       2.700       2.711       2.732
+    HLS8             2.614       2.637       2.648       2.707       2.766       2.777       2.799
+    WLS8             2.562       2.584       2.595       2.653       2.712       2.723       2.745
+    HLS9             2.577       2.599       2.610       2.668       2.726       2.737       2.759
+    WLS9             2.525       2.546       2.557       2.615       2.672       2.683       2.704
+    HLS10            2.576       2.598       2.609       2.668       2.726       2.737       2.759
+    WLS10            2.534       2.555       2.566       2.624       2.682       2.693       2.715
+
+ Variances
+    HTRAIT           1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HAR1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WTRAIT           1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WAR1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ Residual Variances
+    HLS1             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS1             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS2             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS2             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS3             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS3             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS4             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS4             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS5             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS5             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS6             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS6             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS7             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS7             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS8             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS8             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS9             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS9             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS10            0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS10            0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HAR2             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR3             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR4             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR5             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR6             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR7             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR8             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR9             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR10            0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    WAR2             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR3             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR4             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR5             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR6             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR7             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR8             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR9             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR10            0.154       0.182       0.196       0.269       0.343       0.357       0.384
+
+
+STDY Standardization
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ HTRAIT   BY
+    HLS1             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS2             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS3             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS4             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS5             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS6             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS7             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS8             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS9             0.288       0.342       0.370       0.516       0.661       0.689       0.744
+    HLS10            0.288       0.342       0.370       0.516       0.661       0.689       0.744
+
+ HAR1     BY
+    HLS1             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR2     BY
+    HLS2             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR3     BY
+    HLS3             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR4     BY
+    HLS4             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR5     BY
+    HLS5             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR6     BY
+    HLS6             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR7     BY
+    HLS7             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR8     BY
+    HLS8             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR9     BY
+    HLS9             0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ HAR10    BY
+    HLS10            0.526       0.565       0.585       0.690       0.795       0.815       0.854
+
+ WTRAIT   BY
+    WLS1             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS2             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS3             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS4             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS5             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS6             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS7             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS8             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS9             0.475       0.500       0.514       0.583       0.652       0.665       0.691
+    WLS10            0.475       0.500       0.514       0.583       0.652       0.665       0.691
+
+ WAR1     BY
+    WLS1             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR2     BY
+    WLS2             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR3     BY
+    WLS3             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR4     BY
+    WLS4             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR5     BY
+    WLS5             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR6     BY
+    WLS6             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR7     BY
+    WLS7             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR8     BY
+    WLS8             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR9     BY
+    WLS9             0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ WAR10    BY
+    WLS10            0.533       0.555       0.567       0.626       0.685       0.697       0.719
+
+ HAR2     ON
+    HAR1             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR3     ON
+    HAR2             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR4     ON
+    HAR3             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR5     ON
+    HAR4             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR6     ON
+    HAR5             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR7     ON
+    HAR6             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR8     ON
+    HAR7             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR9     ON
+    HAR8             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR10    ON
+    HAR9             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ WAR2     ON
+    WAR1             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR3     ON
+    WAR2             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR4     ON
+    WAR3             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR5     ON
+    WAR4             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR6     ON
+    WAR5             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR7     ON
+    WAR6             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR8     ON
+    WAR7             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR9     ON
+    WAR8             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR10    ON
+    WAR9             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ HTRAIT   WITH
+    WTRAIT           0.455       0.543       0.588       0.823       1.058       1.104       1.192
+
+ HAR1     WITH
+    WAR1             0.023       0.055       0.071       0.156       0.241       0.258       0.290
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HAR2     WITH
+    WAR2             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR3     WITH
+    WAR3             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR4     WITH
+    WAR4             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR5     WITH
+    WAR5             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR6     WITH
+    WAR6             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR7     WITH
+    WAR7             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR8     WITH
+    WAR8             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR9     WITH
+    WAR9             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR10    WITH
+    WAR10            0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ WAR1     WITH
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HLS1     WITH
+    WLS1             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS2     WITH
+    WLS2             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS3     WITH
+    WLS3             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS4     WITH
+    WLS4             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS5     WITH
+    WLS5             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS6     WITH
+    WLS6             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS7     WITH
+    WLS7             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS8     WITH
+    WLS8             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS9     WITH
+    WLS9             0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ HLS10    WITH
+    WLS10            0.016       0.025       0.030       0.057       0.083       0.088       0.098
+
+ Intercepts
+    HLS1             2.496       2.516       2.526       2.580       2.633       2.644       2.664
+    WLS1             2.474       2.494       2.504       2.558       2.611       2.621       2.642
+    HLS2             2.484       2.504       2.515       2.569       2.623       2.634       2.654
+    WLS2             2.392       2.412       2.422       2.476       2.529       2.539       2.559
+    HLS3             2.533       2.553       2.564       2.619       2.675       2.685       2.706
+    WLS3             2.448       2.469       2.479       2.534       2.588       2.599       2.619
+    HLS4             2.551       2.572       2.583       2.639       2.695       2.706       2.727
+    WLS4             2.506       2.527       2.538       2.594       2.649       2.660       2.681
+    HLS5             2.570       2.591       2.602       2.659       2.716       2.726       2.748
+    WLS5             2.483       2.504       2.515       2.571       2.627       2.637       2.658
+    HLS6             2.577       2.598       2.609       2.666       2.723       2.734       2.756
+    WLS6             2.501       2.522       2.533       2.589       2.645       2.656       2.677
+    HLS7             2.619       2.641       2.652       2.711       2.769       2.780       2.802
+    WLS7             2.553       2.574       2.585       2.642       2.700       2.711       2.732
+    HLS8             2.614       2.637       2.648       2.707       2.766       2.777       2.799
+    WLS8             2.562       2.584       2.595       2.653       2.712       2.723       2.745
+    HLS9             2.577       2.599       2.610       2.668       2.726       2.737       2.759
+    WLS9             2.525       2.546       2.557       2.615       2.672       2.683       2.704
+    HLS10            2.576       2.598       2.609       2.668       2.726       2.737       2.759
+    WLS10            2.534       2.555       2.566       2.624       2.682       2.693       2.715
+
+ Variances
+    HTRAIT           1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HAR1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WTRAIT           1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WAR1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ Residual Variances
+    HLS1             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS1             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS2             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS2             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS3             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS3             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS4             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS4             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS5             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS5             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS6             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS6             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS7             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS7             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS8             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS8             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS9             0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS9             0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HLS10            0.236       0.242       0.244       0.258       0.272       0.274       0.279
+    WLS10            0.244       0.250       0.253       0.268       0.284       0.287       0.292
+    HAR2             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR3             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR4             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR5             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR6             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR7             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR8             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR9             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR10            0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    WAR2             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR3             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR4             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR5             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR6             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR7             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR8             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR9             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR10            0.154       0.182       0.196       0.269       0.343       0.357       0.384
+
+
+STD Standardization
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ HTRAIT   BY
+    HLS1             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS2             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS3             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS4             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS5             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS6             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS7             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS8             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS9             0.756       0.902       0.976       1.364       1.751       1.825       1.971
+    HLS10            0.756       0.902       0.976       1.364       1.751       1.825       1.971
+
+ HAR1     BY
+    HLS1             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR2     BY
+    HLS2             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR3     BY
+    HLS3             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR4     BY
+    HLS4             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR5     BY
+    HLS5             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR6     BY
+    HLS6             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR7     BY
+    HLS7             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR8     BY
+    HLS8             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR9     BY
+    HLS9             1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ HAR10    BY
+    HLS10            1.389       1.493       1.546       1.825       2.103       2.156       2.260
+
+ WTRAIT   BY
+    WLS1             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS2             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS3             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS4             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS5             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS6             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS7             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS8             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS9             1.257       1.328       1.365       1.555       1.745       1.782       1.853
+    WLS10            1.257       1.328       1.365       1.555       1.745       1.782       1.853
+
+ WAR1     BY
+    WLS1             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR2     BY
+    WLS2             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR3     BY
+    WLS3             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR4     BY
+    WLS4             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR5     BY
+    WLS5             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR6     BY
+    WLS6             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR7     BY
+    WLS7             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR8     BY
+    WLS8             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR9     BY
+    WLS9             1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ WAR10    BY
+    WLS10            1.422       1.481       1.512       1.670       1.829       1.860       1.919
+
+ HAR2     ON
+    HAR1             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR3     ON
+    HAR2             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR4     ON
+    HAR3             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR5     ON
+    HAR4             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR6     ON
+    HAR5             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR7     ON
+    HAR6             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR8     ON
+    HAR7             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR9     ON
+    HAR8             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ HAR10    ON
+    HAR9             0.838       0.853       0.861       0.901       0.942       0.950       0.965
+
+ WAR2     ON
+    WAR1             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR3     ON
+    WAR2             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR4     ON
+    WAR3             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR5     ON
+    WAR4             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR6     ON
+    WAR5             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR7     ON
+    WAR6             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR8     ON
+    WAR7             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR9     ON
+    WAR8             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ WAR10    ON
+    WAR9             0.788       0.804       0.812       0.855       0.898       0.906       0.922
+
+ HTRAIT   WITH
+    WTRAIT           0.455       0.543       0.588       0.823       1.058       1.104       1.192
+
+ HAR1     WITH
+    WAR1             0.023       0.055       0.071       0.156       0.241       0.258       0.290
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HAR2     WITH
+    WAR2             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR3     WITH
+    WAR3             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR4     WITH
+    WAR4             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR5     WITH
+    WAR5             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR6     WITH
+    WAR6             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR7     WITH
+    WAR7             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR8     WITH
+    WAR8             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR9     WITH
+    WAR9             0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ HAR10    WITH
+    WAR10            0.214       0.236       0.247       0.306       0.366       0.377       0.399
+
+ WAR1     WITH
+    HTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    WTRAIT           0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ HLS1     WITH
+    WLS1             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS2     WITH
+    WLS2             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS3     WITH
+    WLS3             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS4     WITH
+    WLS4             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS5     WITH
+    WLS5             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS6     WITH
+    WLS6             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS7     WITH
+    WLS7             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS8     WITH
+    WLS8             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS9     WITH
+    WLS9             0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ HLS10    WITH
+    WLS10            0.027       0.046       0.055       0.105       0.155       0.164       0.183
+
+ Intercepts
+    HLS1             6.688       6.720       6.736       6.821       6.906       6.923       6.955
+    WLS1             6.687       6.720       6.737       6.824       6.912       6.929       6.962
+    HLS2             6.655       6.688       6.704       6.793       6.881       6.898       6.931
+    WLS2             6.462       6.496       6.514       6.605       6.697       6.714       6.748
+    HLS3             6.785       6.819       6.836       6.926       7.016       7.033       7.066
+    WLS3             6.615       6.650       6.668       6.761       6.854       6.872       6.907
+    HLS4             6.834       6.868       6.886       6.977       7.069       7.087       7.121
+    WLS4             6.772       6.807       6.825       6.920       7.015       7.033       7.068
+    HLS5             6.884       6.919       6.937       7.030       7.123       7.141       7.176
+    WLS5             6.708       6.744       6.762       6.859       6.955       6.974       7.010
+    HLS6             6.902       6.938       6.956       7.050       7.144       7.162       7.197
+    WLS6             6.757       6.793       6.811       6.908       7.005       7.024       7.060
+    HLS7             7.017       7.053       7.071       7.167       7.263       7.282       7.318
+    WLS7             6.896       6.933       6.952       7.051       7.149       7.168       7.205
+    HLS8             7.003       7.040       7.059       7.157       7.255       7.274       7.310
+    WLS8             6.921       6.959       6.978       7.079       7.181       7.200       7.238
+    HLS9             6.904       6.940       6.959       7.055       7.152       7.170       7.206
+    WLS9             6.821       6.858       6.877       6.976       7.075       7.094       7.131
+    HLS10            6.900       6.937       6.956       7.054       7.152       7.171       7.208
+    WLS10            6.844       6.882       6.901       7.002       7.103       7.123       7.160
+
+ Variances
+    HTRAIT           1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    HAR1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WTRAIT           1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    WAR1             1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ Residual Variances
+    HLS1             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS1             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS2             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS2             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS3             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS3             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS4             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS4             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS5             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS5             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS6             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS6             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS7             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS7             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS8             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS8             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS9             1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS9             1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HLS10            1.682       1.711       1.726       1.803       1.881       1.895       1.924
+    WLS10            1.768       1.802       1.819       1.911       2.002       2.020       2.054
+    HAR2             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR3             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR4             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR5             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR6             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR7             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR8             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR9             0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    HAR10            0.073       0.101       0.115       0.188       0.261       0.275       0.302
+    WAR2             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR3             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR4             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR5             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR6             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR7             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR8             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR9             0.154       0.182       0.196       0.269       0.343       0.357       0.384
+    WAR10            0.154       0.182       0.196       0.269       0.343       0.357       0.384
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED)
+
+
+           Model Estimated Means/Intercepts/Thresholds
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+      1         6.821         6.824         6.793         6.605         6.926
+
+
+           Model Estimated Means/Intercepts/Thresholds
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+      1         6.761         6.977         6.920         7.030         6.859
+
+
+           Model Estimated Means/Intercepts/Thresholds
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+      1         7.050         6.908         7.167         7.051         7.157
+
+
+           Model Estimated Means/Intercepts/Thresholds
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+      1         7.079         7.055         6.976         7.054         7.002
+
+
+           Residuals for Means/Intercepts/Thresholds
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+      1         0.005         0.002         0.009        -0.006         0.012
+
+
+           Residuals for Means/Intercepts/Thresholds
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+      1        -0.005        -0.005         0.003         0.042         0.014
+
+
+           Residuals for Means/Intercepts/Thresholds
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+      1         0.016         0.006        -0.008        -0.001         0.005
+
+
+           Residuals for Means/Intercepts/Thresholds
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+      1         0.018        -0.007         0.009         0.003         0.007
+
+
+           Standardized Residuals (z-scores) for Means/Intercepts/Thresholds
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+      1         0.213         0.094         0.766        -0.321         0.920
+
+
+           Standardized Residuals (z-scores) for Means/Intercepts/Thresholds
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+      1        -0.271        -0.491       999.000       999.000       999.000
+
+
+           Standardized Residuals (z-scores) for Means/Intercepts/Thresholds
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+      1       999.000       999.000       999.000       999.000       999.000
+
+
+           Standardized Residuals (z-scores) for Means/Intercepts/Thresholds
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+      1       999.000       999.000       999.000       999.000       999.000
+
+
+           Normalized Residuals for Means/Intercepts/Thresholds
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+      1         0.085         0.037         0.156        -0.101         0.210
+
+
+           Normalized Residuals for Means/Intercepts/Thresholds
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+      1        -0.086        -0.093         0.058         0.791         0.254
+
+
+           Normalized Residuals for Means/Intercepts/Thresholds
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+      1         0.295         0.101        -0.139        -0.011         0.087
+
+
+           Normalized Residuals for Means/Intercepts/Thresholds
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+      1         0.314        -0.127         0.165         0.054         0.119
+
+
+           Model Estimated Covariances/Correlations/Residual Correlations
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           6.991
+ WLS1           2.326         7.119
+ HLS2           4.859         2.174         6.991
+ WLS2           2.152         4.803         2.427         7.119
+ HLS3           4.563         2.132         4.859         2.265         6.991
+ WLS3           2.093         4.457         2.238         4.803         2.505
+ HLS4           4.296         2.094         4.563         2.214         4.859
+ WLS4           2.043         4.161         2.167         4.457         2.305
+ HLS5           4.055         2.059         4.296         2.167         4.563
+ WLS5           1.999         3.908         2.106         4.161         2.223
+ HLS6           3.838         2.028         4.055         2.126         4.296
+ WLS6           1.963         3.692         2.053         3.908         2.154
+ HLS7           3.643         2.000         3.838         2.088         4.055
+ WLS7           1.931         3.507         2.009         3.692         2.095
+ HLS8           3.466         1.975         3.643         2.054         3.838
+ WLS8           1.904         3.349         1.970         3.507         2.044
+ HLS9           3.308         1.952         3.466         2.024         3.643
+ WLS9           1.881         3.214         1.938         3.349         2.001
+ HLS10          3.165         1.932         3.308         1.996         3.466
+ WLS10          1.861         3.098         1.910         3.214         1.964
+
+
+           Model Estimated Covariances/Correlations/Residual Correlations
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           7.119
+ HLS4           2.335         6.991
+ WLS4           4.803         2.565         7.119
+ HLS5           2.277         4.859         2.389         6.991
+ WLS5           4.457         2.356         4.803         2.611         7.119
+ HLS6           2.224         4.563         2.325         4.859         2.430
+ WLS6           4.161         2.267         4.457         2.395         4.803
+ HLS7           2.177         4.296         2.268         4.563         2.363
+ WLS7           3.908         2.191         4.161         2.301         4.457
+ HLS8           2.134         4.055         2.216         4.296         2.302
+ WLS8           3.692         2.127         3.908         2.220         4.161
+ HLS9           2.096         3.838         2.170         4.055         2.247
+ WLS9           3.507         2.071         3.692         2.151         3.908
+ HLS10          2.061         3.643         2.128         3.838         2.197
+ WLS10          3.349         2.024         3.507         2.092         3.692
+
+
+           Model Estimated Covariances/Correlations/Residual Correlations
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6           6.991
+ WLS6           2.646         7.119
+ HLS7           4.859         2.462         6.991
+ WLS7           2.425         4.803         2.673         7.119
+ HLS8           4.563         2.391         4.859         2.487         6.991
+ WLS8           2.327         4.457         2.449         4.803         2.694
+ HLS9           4.296         2.328         4.563         2.414         4.859
+ WLS9           2.242         4.161         2.347         4.457         2.467
+ HLS10          4.055         2.270         4.296         2.348         4.563
+ WLS10          2.170         3.908         2.259         4.161         2.362
+
+
+           Model Estimated Covariances/Correlations/Residual Correlations
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8           7.119
+ HLS9           2.506         6.991
+ WLS9           4.803         2.711         7.119
+ HLS10          2.431         4.859         2.521         6.991
+ WLS10          4.457         2.481         4.803         2.723         7.119
+
+
+           Residuals for Covariances/Correlations/Residual Correlations
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           1.146
+ WLS1           0.446         1.180
+ HLS2          -0.215         0.035         0.155
+ WLS2          -0.081         0.222         0.054         0.627
+ HLS3          -0.391         0.064        -0.200         0.034         0.155
+ WLS3           0.061         0.099         0.040         0.304        -0.163
+ HLS4          -0.408         0.217        -0.057         0.235         0.183
+ WLS4          -0.230        -0.270        -0.014         0.091         0.082
+ HLS5          -0.868        -0.118        -0.500        -0.215        -0.641
+ WLS5          -0.506        -0.285        -0.187        -0.193        -0.170
+ HLS6          -0.433         0.116        -0.122         0.116        -0.224
+ WLS6          -0.160        -0.314        -0.003        -0.004        -0.211
+ HLS7          -0.218         0.094         0.201         0.192         0.034
+ WLS7           0.024        -0.181         0.189         0.110        -0.014
+ HLS8          -0.243        -0.187         0.217         0.006        -0.121
+ WLS8          -0.345        -0.286        -0.111        -0.260        -0.430
+ HLS9          -0.254        -0.114         0.293        -0.007         0.041
+ WLS9          -0.240        -0.230        -0.094        -0.172        -0.286
+ HLS10         -0.162        -0.262         0.163        -0.102        -0.178
+ WLS10         -0.297        -0.011        -0.228         0.257        -0.349
+
+
+           Residuals for Covariances/Correlations/Residual Correlations
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           0.604
+ HLS4           0.172         0.159
+ WLS4          -0.014         0.137        -0.169
+ HLS5          -0.271        -0.391        -0.322        -1.096
+ WLS5          -0.127         0.048        -0.247        -0.678        -0.757
+ HLS6           0.043        -0.037        -0.053        -0.573        -0.346
+ WLS6          -0.147         0.308        -0.337        -0.425        -0.556
+ HLS7           0.156         0.359        -0.028        -0.103        -0.212
+ WLS7           0.010         0.320        -0.118        -0.275        -0.418
+ HLS8           0.061         0.188         0.036        -0.506        -0.272
+ WLS8          -0.304        -0.018        -0.050        -0.356        -0.546
+ HLS9           0.170         0.343         0.119        -0.124        -0.004
+ WLS9          -0.014         0.099        -0.076        -0.384        -0.294
+ HLS10          0.146         0.256        -0.147        -0.378        -0.168
+ WLS10          0.005        -0.006        -0.097        -0.411        -0.194
+
+
+           Residuals for Covariances/Correlations/Residual Correlations
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6          -0.827
+ WLS6          -0.291        -0.697
+ HLS7          -0.130        -0.324        -0.485
+ WLS7          -0.142        -0.414        -0.297        -0.870
+ HLS8          -0.382        -0.296        -0.310        -0.201        -0.872
+ WLS8          -0.375        -0.457        -0.388        -0.603        -0.383
+ HLS9           0.031        -0.150        -0.072        -0.131        -0.179
+ WLS9          -0.199        -0.487        -0.491        -0.589        -0.349
+ HLS10         -0.195        -0.332        -0.119        -0.251        -0.236
+ WLS10         -0.180        -0.426        -0.206        -0.345        -0.191
+
+
+           Residuals for Covariances/Correlations/Residual Correlations
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8          -1.266
+ HLS9          -0.258        -0.099
+ WLS9          -0.581        -0.159        -0.745
+ HLS10         -0.427        -0.145        -0.410        -0.422
+ WLS10         -0.475        -0.262        -0.568        -0.148        -0.495
+
+
+           Standardized Residuals (z-scores) for Covariances/Correlations/Residual Corr
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           5.802
+ WLS1           3.204         5.578
+ HLS2          -1.509         0.245         0.830
+ WLS2          -0.522         1.339         0.365         2.843
+ HLS3          -2.647         0.415        -1.397         0.214         0.775
+ WLS3           0.357         0.579         0.254         1.747        -1.032
+ HLS4          -2.708         1.326        -0.389         1.429         1.157
+ WLS4          -1.423        -1.751        -0.092         0.577         0.539
+ HLS5          -6.822        -0.816        -4.109        -1.482        -4.985
+ WLS5          -3.264        -1.948        -1.294        -1.307        -1.144
+ HLS6          -3.245         0.768        -0.950         0.759        -1.659
+ WLS6          -1.016        -2.134        -0.022        -0.028        -1.453
+ HLS7          -1.541         0.588         1.461         1.201         0.238
+ WLS7           0.159        -1.276         1.333         0.750        -0.097
+ HLS8          -1.842        -1.199         1.619         0.037        -0.864
+ WLS8          -2.268        -2.057        -0.785        -1.849        -3.032
+ HLS9          -1.814        -0.673         2.110        -0.039         0.279
+ WLS9          -1.514        -1.623        -0.656        -1.172        -1.947
+ HLS10         -1.235        -1.532         1.266        -0.615        -1.266
+ WLS10         -1.774        -0.079        -1.489         1.738        -2.209
+
+
+           Standardized Residuals (z-scores) for Covariances/Correlations/Residual Corr
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           2.627
+ HLS4           1.033         0.750
+ WLS4          -0.086         0.887        -0.824
+ HLS5          -1.841        -2.777        -2.389        -6.464
+ WLS5          -0.800         0.308        -1.638        -5.404        -3.853
+ HLS6           0.282        -0.254        -0.369        -4.499        -2.588
+ WLS6          -0.930         1.997        -2.299        -3.343        -3.792
+ HLS7           0.963         2.280        -0.185        -0.736        -1.478
+ WLS7           0.063         2.138        -0.821        -2.214        -2.987
+ HLS8           0.381         1.241         0.246        -3.984        -1.924
+ WLS8          -2.061        -0.126        -0.356        -2.875        -4.125
+ HLS9           0.993         2.162         0.736        -0.897        -0.029
+ WLS9          -0.092         0.645        -0.509        -2.997        -2.073
+ HLS10          0.874         1.687        -0.943        -2.877        -1.143
+ WLS10          0.034        -0.036        -0.642        -2.987        -1.316
+
+
+           Standardized Residuals (z-scores) for Covariances/Correlations/Residual Corr
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6          -4.614
+ WLS6          -2.243        -3.535
+ HLS7          -0.888        -2.371        -2.421
+ WLS7          -1.114        -2.824        -2.275        -4.546
+ HLS8          -2.791        -2.154        -2.042        -1.568        -4.417
+ WLS8          -2.955        -3.199        -3.037        -4.314        -3.025
+ HLS9           0.210        -1.006        -0.457        -0.925        -1.107
+ WLS9          -1.488        -3.357        -3.666        -4.093        -2.699
+ HLS10         -1.376        -2.327        -0.785        -1.855        -1.558
+ WLS10         -1.248        -2.862        -1.413        -2.332        -1.361
+
+
+           Standardized Residuals (z-scores) for Covariances/Correlations/Residual Corr
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8          -6.850
+ HLS9          -1.894        -0.466
+ WLS9          -4.008        -1.186        -3.840
+ HLS10         -3.272        -0.899        -3.190        -2.092
+ WLS10         -3.207        -1.819        -3.699        -1.065        -2.388
+
+
+           Normalized Residuals for Covariances/Correlations/Residual Correlations
+              HLS1          WLS1          HLS2          WLS2          HLS3
+              ________      ________      ________      ________      ________
+ HLS1           4.736
+ WLS1           2.350         4.643
+ HLS2          -1.074         0.186         0.664
+ WLS2          -0.414         1.017         0.288         2.396
+ HLS3          -1.923         0.331        -0.995         0.174         0.635
+ WLS3           0.297         0.447         0.207         1.355        -0.847
+ HLS4          -1.984         1.088        -0.281         1.186         0.865
+ WLS4          -1.168        -1.291        -0.074         0.431         0.436
+ HLS5          -4.579        -0.645        -2.695        -1.182        -3.377
+ WLS5          -2.638        -1.400        -1.026        -0.944        -0.917
+ HLS6          -2.227         0.615        -0.640         0.615        -1.152
+ WLS6          -0.822        -1.533        -0.017        -0.021        -1.146
+ HLS7          -1.082         0.480         1.019         0.983         0.171
+ WLS7           0.126        -0.895         1.031         0.537        -0.075
+ HLS8          -1.228        -0.968         1.104         0.030        -0.609
+ WLS8          -1.777        -1.407        -0.599        -1.290        -2.322
+ HLS9          -1.219        -0.556         1.446        -0.032         0.198
+ WLS9          -1.194        -1.097        -0.499        -0.824        -1.497
+ HLS10         -0.772        -1.264         0.811        -0.501        -0.874
+ WLS10         -1.413        -0.052        -1.151         1.204        -1.731
+
+
+           Normalized Residuals for Covariances/Correlations/Residual Correlations
+              WLS3          HLS4          WLS4          HLS5          WLS5
+              ________      ________      ________      ________      ________
+ WLS3           2.240
+ HLS4           0.860         0.626
+ WLS4          -0.065         0.721        -0.679
+ HLS5          -1.474        -1.965        -1.834        -4.989
+ WLS5          -0.599         0.249        -1.193        -3.999        -3.131
+ HLS6           0.229        -0.184        -0.290        -3.018        -1.952
+ WLS6          -0.694         1.606        -1.659        -2.463        -2.725
+ HLS7           0.791         1.703        -0.148        -0.522        -1.146
+ WLS7           0.047         1.688        -0.585        -1.607        -2.105
+ HLS8           0.309         0.909         0.193        -2.676        -1.474
+ WLS8          -1.483        -0.097        -0.251        -2.066        -2.822
+ HLS9           0.820         1.613         0.593        -0.630        -0.023
+ WLS9          -0.067         0.504        -0.369        -2.165        -1.466
+ HLS10          0.712         1.224        -0.745        -1.958        -0.877
+ WLS10          0.025        -0.029        -0.464        -2.209        -0.946
+
+
+           Normalized Residuals for Covariances/Correlations/Residual Correlations
+              HLS6          WLS6          HLS7          WLS7          HLS8
+              ________      ________      ________      ________      ________
+ HLS6          -3.638
+ WLS6          -1.660        -2.877
+ HLS7          -0.641        -1.778        -1.986
+ WLS7          -0.810        -2.029        -1.662        -3.661
+ HLS8          -1.954        -1.617        -1.497        -1.127        -3.606
+ WLS8          -2.134        -2.278        -2.177        -3.029        -2.147
+ HLS9           0.152        -0.777        -0.342        -0.694        -0.834
+ WLS9          -1.094        -2.405        -2.679        -2.927        -1.921
+ HLS10         -0.977        -1.753        -0.576        -1.355        -1.144
+ WLS10         -0.940        -2.073        -1.068        -1.688        -1.004
+
+
+           Normalized Residuals for Covariances/Correlations/Residual Correlations
+              WLS8          HLS9          WLS9          HLS10         WLS10
+              ________      ________      ________      ________      ________
+ WLS8          -5.448
+ HLS9          -1.381        -0.389
+ WLS9          -2.864        -0.855        -3.107
+ HLS10         -2.331        -0.677        -2.234        -1.720
+ WLS10         -2.325        -1.346        -2.716        -0.773        -1.976
+
+
+TECHNICAL 3 OUTPUT
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                  1             2             3             4             5
+              ________      ________      ________      ________      ________
+      1         0.003
+      2         0.001         0.003
+      3         0.002         0.001         0.003
+      4         0.001         0.002         0.001         0.003
+      5         0.002         0.001         0.002         0.001         0.003
+      6         0.001         0.002         0.001         0.002         0.001
+      7         0.002         0.001         0.002         0.001         0.002
+      8         0.001         0.002         0.001         0.002         0.001
+      9         0.001         0.001         0.002         0.001         0.002
+     10         0.001         0.001         0.001         0.002         0.001
+     11         0.001         0.001         0.001         0.001         0.002
+     12         0.001         0.001         0.001         0.001         0.001
+     13         0.001         0.001         0.001         0.001         0.001
+     14         0.001         0.001         0.001         0.001         0.001
+     15         0.001         0.001         0.001         0.001         0.001
+     16         0.001         0.001         0.001         0.001         0.001
+     17         0.001         0.001         0.001         0.001         0.001
+     18         0.001         0.001         0.001         0.001         0.001
+     19         0.001         0.001         0.001         0.001         0.001
+     20         0.001         0.001         0.001         0.001         0.001
+     21         0.000         0.000         0.000         0.000         0.000
+     22         0.000         0.000         0.000         0.000         0.000
+     23         0.000         0.000         0.000         0.000         0.000
+     24         0.000         0.000         0.000         0.000         0.000
+     25         0.000         0.000         0.000         0.000         0.000
+     26         0.000         0.000         0.000         0.000         0.000
+     27         0.000         0.000         0.000         0.000         0.000
+     28         0.000         0.000         0.000         0.000         0.000
+     29         0.000         0.000         0.000         0.000         0.000
+     30         0.000         0.000         0.000         0.000         0.000
+     31         0.000         0.000         0.000         0.000         0.000
+     32         0.000         0.000         0.000         0.000         0.000
+     33         0.000         0.000         0.000         0.000         0.000
+     34         0.000         0.000         0.000         0.000         0.000
+     35         0.000         0.000         0.000         0.000         0.000
+     36         0.000         0.000         0.000         0.000         0.000
+     37         0.000         0.000         0.000         0.000         0.000
+     38         0.000         0.000         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000         0.000
+     40         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                  6             7             8             9            10
+              ________      ________      ________      ________      ________
+      6         0.003
+      7         0.001         0.003
+      8         0.002         0.001         0.003
+      9         0.001         0.002         0.001         0.003
+     10         0.002         0.001         0.002         0.001         0.003
+     11         0.001         0.002         0.001         0.002         0.001
+     12         0.002         0.001         0.002         0.001         0.002
+     13         0.001         0.002         0.001         0.002         0.001
+     14         0.001         0.001         0.002         0.001         0.002
+     15         0.001         0.002         0.001         0.002         0.001
+     16         0.001         0.001         0.002         0.001         0.002
+     17         0.001         0.001         0.001         0.002         0.001
+     18         0.001         0.001         0.001         0.001         0.002
+     19         0.001         0.001         0.001         0.001         0.001
+     20         0.001         0.001         0.001         0.001         0.001
+     21         0.000         0.000         0.000         0.000         0.000
+     22         0.000         0.000         0.000         0.000         0.000
+     23         0.000         0.000         0.000         0.000         0.000
+     24         0.000         0.000         0.000         0.000         0.000
+     25         0.000         0.000         0.000         0.000         0.000
+     26         0.000         0.000         0.000         0.000         0.000
+     27         0.000         0.000         0.000         0.000         0.000
+     28         0.000         0.000         0.000         0.000         0.000
+     29         0.000         0.000         0.000         0.000         0.000
+     30         0.000         0.000         0.000         0.000         0.000
+     31         0.000         0.000         0.000         0.000         0.000
+     32         0.000         0.000         0.000         0.000         0.000
+     33         0.000         0.000         0.000         0.000         0.000
+     34         0.000         0.000         0.000         0.000         0.000
+     35         0.000         0.000         0.000         0.000         0.000
+     36         0.000         0.000         0.000         0.000         0.000
+     37         0.000         0.000         0.000         0.000         0.000
+     38         0.000         0.000         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000         0.000
+     40         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                 11            12            13            14            15
+              ________      ________      ________      ________      ________
+     11         0.003
+     12         0.001         0.003
+     13         0.002         0.001         0.003
+     14         0.001         0.002         0.001         0.004
+     15         0.002         0.001         0.002         0.001         0.004
+     16         0.001         0.002         0.001         0.002         0.001
+     17         0.002         0.001         0.002         0.001         0.002
+     18         0.001         0.002         0.001         0.002         0.001
+     19         0.002         0.001         0.002         0.001         0.002
+     20         0.001         0.002         0.001         0.002         0.001
+     21         0.000         0.000         0.000         0.000         0.000
+     22         0.000         0.000         0.000         0.000         0.000
+     23         0.000         0.000         0.000         0.000         0.000
+     24         0.000         0.000         0.000         0.000         0.000
+     25         0.000         0.000         0.000         0.000         0.000
+     26         0.000         0.000         0.000         0.000         0.000
+     27         0.000         0.000         0.000         0.000         0.000
+     28         0.000         0.000         0.000         0.000         0.000
+     29         0.000         0.000         0.000         0.000         0.000
+     30         0.000         0.000         0.000         0.000         0.000
+     31         0.000         0.000         0.000         0.000         0.000
+     32         0.000         0.000         0.000         0.000         0.000
+     33         0.000         0.000         0.000         0.000         0.000
+     34         0.000         0.000         0.000         0.000         0.000
+     35         0.000         0.000         0.000         0.000         0.000
+     36         0.000         0.000         0.000         0.000         0.000
+     37         0.000         0.000         0.000         0.000         0.000
+     38         0.000         0.000         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000         0.000
+     40         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                 16            17            18            19            20
+              ________      ________      ________      ________      ________
+     16         0.004
+     17         0.001         0.003
+     18         0.002         0.001         0.004
+     19         0.001         0.002         0.001         0.004
+     20         0.002         0.001         0.002         0.001         0.004
+     21         0.000         0.000         0.000         0.000         0.000
+     22         0.000         0.000         0.000         0.000         0.000
+     23         0.000         0.000         0.000         0.000         0.000
+     24         0.000         0.000         0.000         0.000         0.000
+     25         0.000         0.000         0.000         0.000         0.000
+     26         0.000         0.000         0.000        -0.001        -0.001
+     27         0.000         0.000         0.000         0.000         0.001
+     28         0.000         0.000         0.000         0.000         0.000
+     29         0.000         0.000         0.000         0.000         0.000
+     30         0.000         0.000         0.000         0.000         0.000
+     31         0.000         0.000         0.000         0.000         0.000
+     32         0.000         0.000         0.000         0.000         0.000
+     33         0.000         0.000         0.000         0.000         0.000
+     34         0.000         0.000         0.000         0.000         0.000
+     35         0.000         0.000         0.000         0.000         0.000
+     36         0.000         0.000         0.000         0.000         0.000
+     37         0.000         0.000         0.000         0.000         0.000
+     38         0.000         0.000         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000         0.000
+     40         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                 21            22            23            24            25
+              ________      ________      ________      ________      ________
+     21         0.002
+     22         0.000         0.001
+     23         0.000         0.000         0.003
+     24         0.001         0.000         0.000         0.001
+     25         0.000         0.000         0.001         0.000         0.001
+     26        -0.014        -0.002        -0.007        -0.015        -0.005
+     27         0.012         0.002         0.007         0.015         0.005
+     28        -0.002         0.000         0.000        -0.001         0.000
+     29        -0.001         0.001        -0.001        -0.001        -0.001
+     30        -0.003        -0.001        -0.009        -0.003        -0.008
+     31         0.001        -0.001         0.001         0.001         0.001
+     32         0.002         0.000         0.006         0.002         0.008
+     33         0.000        -0.001         0.000         0.000         0.000
+     34         0.000         0.000        -0.003         0.000        -0.001
+     35         0.003         0.001         0.002         0.003         0.002
+     36         0.000        -0.001         0.000         0.000         0.000
+     37         0.000         0.000         0.000         0.000         0.000
+     38         0.000         0.000         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000         0.000
+     40         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                 26            27            28            29            30
+              ________      ________      ________      ________      ________
+     26         0.413
+     27        -0.386         0.381
+     28         0.018        -0.016         0.002
+     29         0.046        -0.036         0.001         0.025
+     30         0.068        -0.063         0.003         0.028         0.129
+     31        -0.034         0.032        -0.001        -0.019        -0.019
+     32        -0.059         0.058        -0.003        -0.018        -0.105
+     33         0.004        -0.003         0.001        -0.001         0.002
+     34         0.009        -0.009         0.001         0.002         0.011
+     35        -0.081         0.079        -0.004        -0.003        -0.024
+     36         0.000         0.000         0.000        -0.005        -0.002
+     37         0.006        -0.006         0.000         0.000         0.003
+     38        -0.001         0.001         0.000         0.000         0.000
+     39         0.003        -0.002         0.000         0.000         0.000
+     40         0.001        -0.001         0.000         0.001         0.002
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                 31            32            33            34            35
+              ________      ________      ________      ________      ________
+     31         0.029
+     32         0.017         0.104
+     33         0.001        -0.001         0.001
+     34        -0.001        -0.008         0.001         0.004
+     35         0.002         0.023        -0.002        -0.003         0.020
+     36         0.008         0.001         0.001         0.000        -0.002
+     37         0.000        -0.002         0.000         0.000        -0.002
+     38        -0.001         0.000         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000         0.000
+     40         0.000        -0.001         0.000         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                 36            37            38            39            40
+              ________      ________      ________      ________      ________
+     36         0.003
+     37         0.000         0.000
+     38         0.000         0.000         0.000
+     39         0.000         0.000         0.000         0.000
+     40         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                  1             2             3             4             5
+              ________      ________      ________      ________      ________
+      1         1.000
+      2         0.295         1.000
+      3         0.630         0.263         1.000
+      4         0.258         0.599         0.293         1.000
+      5         0.573         0.252         0.619         0.263         1.000
+      6         0.244         0.538         0.259         0.588         0.297
+      7         0.524         0.241         0.562         0.250         0.608
+      8         0.233         0.490         0.245         0.528         0.261
+      9         0.483         0.233         0.516         0.240         0.555
+     10         0.223         0.448         0.232         0.478         0.245
+     11         0.450         0.227         0.479         0.233         0.513
+     12         0.217         0.418         0.224         0.442         0.235
+     13         0.415         0.218         0.439         0.223         0.468
+     14         0.210         0.388         0.215         0.406         0.224
+     15         0.385         0.211         0.405         0.214         0.430
+     16         0.201         0.360         0.205         0.374         0.212
+     17         0.369         0.211         0.386         0.213         0.408
+     18         0.202         0.348         0.205         0.358         0.210
+     19         0.346         0.205         0.361         0.207         0.380
+     20         0.196         0.329         0.198         0.337         0.203
+     21         0.001        -0.002         0.008         0.000         0.008
+     22         0.001         0.000         0.001         0.006         0.003
+     23        -0.003        -0.001        -0.003         0.002        -0.002
+     24         0.001        -0.003        -0.001        -0.001        -0.005
+     25        -0.003        -0.004        -0.003        -0.001        -0.003
+     26        -0.004         0.002        -0.003         0.000         0.002
+     27         0.002        -0.003        -0.002        -0.001        -0.007
+     28         0.002         0.003        -0.003         0.001        -0.002
+     29        -0.008        -0.010        -0.010        -0.010        -0.007
+     30         0.001        -0.006         0.001        -0.009         0.002
+     31         0.000         0.000         0.002        -0.006         0.001
+     32        -0.002        -0.001        -0.002         0.000        -0.003
+     33         0.007         0.005         0.002        -0.001        -0.001
+     34         0.004         0.006         0.004         0.002         0.003
+     35        -0.001        -0.004        -0.003        -0.001        -0.006
+     36         0.000         0.001         0.004        -0.006         0.004
+     37         0.005         0.005         0.003         0.000         0.004
+     38         0.001         0.000         0.000         0.006         0.003
+     39        -0.008        -0.001        -0.019        -0.002        -0.018
+     40         0.000        -0.010         0.000        -0.015         0.000
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                  6             7             8             9            10
+              ________      ________      ________      ________      ________
+      6         1.000
+      7         0.265         1.000
+      8         0.582         0.298         1.000
+      9         0.253         0.603         0.266         1.000
+     10         0.521         0.261         0.575         0.298         1.000
+     11         0.244         0.553         0.255         0.605         0.268
+     12         0.477         0.248         0.521         0.265         0.578
+     13         0.232         0.503         0.242         0.548         0.253
+     14         0.435         0.234         0.472         0.248         0.518
+     15         0.222         0.461         0.231         0.499         0.240
+     16         0.398         0.220         0.427         0.231         0.465
+     17         0.221         0.435         0.228         0.468         0.237
+     18         0.378         0.216         0.402         0.226         0.432
+     19         0.213         0.404         0.220         0.433         0.227
+     20         0.354         0.208         0.374         0.215         0.399
+     21         0.001         0.003         0.002         0.006         0.003
+     22         0.007         0.005         0.001         0.006         0.012
+     23         0.003        -0.001         0.014         0.000         0.011
+     24         0.001        -0.009         0.002        -0.009         0.004
+     25        -0.002        -0.003         0.003        -0.002        -0.003
+     26        -0.002         0.004        -0.003         0.004        -0.005
+     27         0.001        -0.010         0.002        -0.011         0.004
+     28        -0.001         0.004        -0.001         0.001        -0.003
+     29        -0.010        -0.007        -0.015        -0.008        -0.016
+     30        -0.007         0.002        -0.010         0.000        -0.006
+     31        -0.004        -0.001         0.003         0.000         0.002
+     32        -0.002        -0.003        -0.002        -0.002        -0.007
+     33        -0.003        -0.004         0.000        -0.006        -0.003
+     34         0.001         0.002        -0.009         0.001        -0.005
+     35         0.000        -0.008         0.000        -0.008        -0.001
+     36        -0.004         0.002         0.003         0.003         0.003
+     37        -0.002         0.003         0.000         0.001        -0.001
+     38         0.007         0.005         0.000         0.006         0.011
+     39        -0.003        -0.018        -0.004        -0.022        -0.005
+     40        -0.014        -0.001        -0.026        -0.002        -0.025
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                 11            12            13            14            15
+              ________      ________      ________      ________      ________
+     11         1.000
+     12         0.303         1.000
+     13         0.600         0.269         1.000
+     14         0.265         0.578         0.301         1.000
+     15         0.545         0.254         0.595         0.267         1.000
+     16         0.246         0.514         0.261         0.571         0.297
+     17         0.507         0.249         0.549         0.260         0.598
+     18         0.238         0.473         0.251         0.517         0.266
+     19         0.468         0.238         0.505         0.248         0.548
+     20         0.226         0.433         0.236         0.470         0.249
+     21         0.000         0.001        -0.002         0.004        -0.009
+     22         0.001        -0.002         0.003         0.001        -0.002
+     23        -0.001        -0.002         0.001         0.000         0.001
+     24        -0.011         0.002        -0.010         0.007        -0.010
+     25        -0.002        -0.011         0.001        -0.009         0.001
+     26         0.005        -0.004         0.002        -0.009        -0.002
+     27        -0.011         0.003        -0.009         0.008        -0.005
+     28         0.008         0.000         0.011        -0.004         0.019
+     29        -0.008        -0.016        -0.013        -0.020        -0.017
+     30         0.001         0.000        -0.002        -0.002        -0.003
+     31         0.001         0.006         0.004         0.009         0.008
+     32        -0.002        -0.010         0.001        -0.008         0.002
+     33         0.000         0.004         0.001         0.005         0.006
+     34         0.002         0.008         0.000         0.007         0.000
+     35        -0.009        -0.005        -0.007        -0.001        -0.006
+     36         0.005         0.007         0.007         0.009         0.010
+     37         0.006         0.004         0.004         0.002         0.006
+     38         0.001        -0.002         0.003         0.001        -0.001
+     39        -0.017        -0.004        -0.017        -0.007        -0.013
+     40        -0.001        -0.012        -0.003        -0.014        -0.003
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                 16            17            18            19            20
+              ________      ________      ________      ________      ________
+     16         1.000
+     17         0.271         1.000
+     18         0.571         0.312         1.000
+     19         0.257         0.610         0.278         1.000
+     20         0.515         0.272         0.585         0.311         1.000
+     21         0.004        -0.011         0.004        -0.016         0.004
+     22        -0.008         0.001        -0.007        -0.003        -0.012
+     23        -0.005         0.002         0.001         0.004        -0.003
+     24         0.008        -0.009         0.010         0.000         0.012
+     25        -0.009         0.002        -0.001         0.008         0.004
+     26        -0.010        -0.005        -0.013        -0.017        -0.015
+     27         0.009        -0.002         0.011         0.011         0.014
+     28        -0.003         0.021        -0.003         0.025        -0.004
+     29        -0.028        -0.022        -0.034        -0.029        -0.041
+     30        -0.007        -0.005        -0.015        -0.010        -0.022
+     31         0.017         0.011         0.022         0.017         0.029
+     32        -0.004         0.003         0.003         0.008         0.012
+     33         0.016         0.006         0.016         0.009         0.018
+     34         0.013        -0.001         0.007        -0.004         0.009
+     35        -0.001        -0.005         0.001         0.006         0.003
+     36         0.016         0.013         0.020         0.014         0.025
+     37         0.008         0.004         0.005        -0.001         0.002
+     38        -0.008         0.001        -0.007        -0.003        -0.013
+     39        -0.007        -0.013        -0.008        -0.009        -0.008
+     40        -0.013        -0.004        -0.019        -0.007        -0.015
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                 21            22            23            24            25
+              ________      ________      ________      ________      ________
+     21         1.000
+     22         0.222         1.000
+     23         0.125         0.214         1.000
+     24         0.601         0.148         0.209         1.000
+     25         0.180         0.131         0.644         0.328         1.000
+     26        -0.476        -0.112        -0.197        -0.956        -0.314
+     27         0.425         0.098         0.200         0.961         0.321
+     28        -0.813        -0.217        -0.159        -0.751        -0.233
+     29        -0.149         0.169        -0.157        -0.345        -0.328
+     30        -0.152        -0.083        -0.456        -0.287        -0.886
+     31         0.093        -0.275         0.107         0.274         0.278
+     32         0.154         0.050         0.350         0.295         0.902
+     33        -0.280        -0.660        -0.297        -0.268        -0.285
+     34        -0.152        -0.202        -0.836        -0.257        -0.779
+     35         0.460         0.235         0.309         0.893         0.521
+     36        -0.046        -0.333        -0.002        -0.024         0.053
+     37        -0.429        -0.503        -0.393        -0.710        -0.600
+     38         0.173         0.998         0.161         0.112         0.092
+     39        -0.788        -0.184        -0.088        -0.452        -0.125
+     40        -0.097        -0.187        -0.821        -0.162        -0.509
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                 26            27            28            29            30
+              ________      ________      ________      ________      ________
+     26         1.000
+     27        -0.974         1.000
+     28         0.584        -0.538         1.000
+     29         0.455        -0.372         0.163         1.000
+     30         0.296        -0.285         0.193         0.501         1.000
+     31        -0.307         0.305        -0.105        -0.689        -0.308
+     32        -0.287         0.293        -0.197        -0.357        -0.909
+     33         0.203        -0.186         0.371        -0.211         0.185
+     34         0.240        -0.245         0.199         0.166         0.530
+     35        -0.884         0.896        -0.579        -0.146        -0.461
+     36        -0.010        -0.001         0.071        -0.579        -0.095
+     37         0.670        -0.672         0.555         0.133         0.518
+     38        -0.082         0.069        -0.176         0.187        -0.054
+     39         0.468        -0.292         0.678         0.367         0.154
+     40         0.177        -0.155         0.122         0.360         0.550
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                 31            32            33            34            35
+              ________      ________      ________      ________      ________
+     31         1.000
+     32         0.318         1.000
+     33         0.266        -0.148         1.000
+     34        -0.118        -0.431         0.381         1.000
+     35         0.078         0.488        -0.391        -0.379         1.000
+     36         0.940         0.088         0.365         0.016        -0.252
+     37        -0.054        -0.523         0.801         0.494        -0.818
+     38        -0.290         0.025        -0.644        -0.155         0.202
+     39        -0.095        -0.107         0.236         0.105        -0.340
+     40        -0.099        -0.234         0.259         0.723        -0.224
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                 36            37            38            39            40
+              ________      ________      ________      ________      ________
+     36         1.000
+     37         0.221         1.000
+     38        -0.337        -0.472         1.000
+     39        -0.003         0.325        -0.147         1.000
+     40        -0.022         0.313        -0.144         0.138         1.000
+
+
+TECHNICAL 4 OUTPUT
+
+
+     ESTIMATES DERIVED FROM THE MODEL
+
+
+           ESTIMATED MEANS FOR THE LATENT VARIABLES
+              HTRAIT        HAR1          HAR2          HAR3          HAR4
+              ________      ________      ________      ________      ________
+      1         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED MEANS FOR THE LATENT VARIABLES
+              HAR5          HAR6          HAR7          HAR8          HAR9
+              ________      ________      ________      ________      ________
+      1         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED MEANS FOR THE LATENT VARIABLES
+              HAR10         WTRAIT        WAR1          WAR2          WAR3
+              ________      ________      ________      ________      ________
+      1         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED MEANS FOR THE LATENT VARIABLES
+              WAR4          WAR5          WAR6          WAR7          WAR8
+              ________      ________      ________      ________      ________
+      1         0.000         0.000         0.000         0.000         0.000
+
+
+           ESTIMATED MEANS FOR THE LATENT VARIABLES
+              WAR9          WAR10
+              ________      ________
+      1         0.000         0.000
+
+
+           ESTIMATED COVARIANCE MATRIX FOR THE LATENT VARIABLES
+              HTRAIT        HAR1          HAR2          HAR3          HAR4
+              ________      ________      ________      ________      ________
+ HTRAIT         1.859
+ HAR1           0.000         3.329
+ HAR2           0.000         3.000         3.329
+ HAR3           0.000         2.704         3.000         3.329
+ HAR4           0.000         2.437         2.704         3.000         3.329
+ HAR5           0.000         2.196         2.437         2.704         3.000
+ HAR6           0.000         1.979         2.196         2.437         2.704
+ HAR7           0.000         1.784         1.979         2.196         2.437
+ HAR8           0.000         1.607         1.784         1.979         2.196
+ HAR9           0.000         1.449         1.607         1.784         1.979
+ HAR10          0.000         1.305         1.449         1.607         1.784
+ WTRAIT         1.745         0.000         0.000         0.000         0.000
+ WAR1           0.000         0.476         0.429         0.387         0.348
+ WAR2           0.000         0.407         0.577         0.520         0.468
+ WAR3           0.000         0.348         0.493         0.654         0.590
+ WAR4           0.000         0.297         0.422         0.559         0.714
+ WAR5           0.000         0.254         0.360         0.478         0.610
+ WAR6           0.000         0.217         0.308         0.409         0.522
+ WAR7           0.000         0.186         0.263         0.350         0.446
+ WAR8           0.000         0.159         0.225         0.299         0.381
+ WAR9           0.000         0.136         0.192         0.255         0.326
+ WAR10          0.000         0.116         0.165         0.218         0.279
+
+
+           ESTIMATED COVARIANCE MATRIX FOR THE LATENT VARIABLES
+              HAR5          HAR6          HAR7          HAR8          HAR9
+              ________      ________      ________      ________      ________
+ HAR5           3.329
+ HAR6           3.000         3.329
+ HAR7           2.704         3.000         3.329
+ HAR8           2.437         2.704         3.000         3.329
+ HAR9           2.196         2.437         2.704         3.000         3.329
+ HAR10          1.979         2.196         2.437         2.704         3.000
+ WTRAIT         0.000         0.000         0.000         0.000         0.000
+ WAR1           0.314         0.283         0.255         0.230         0.207
+ WAR2           0.422         0.380         0.343         0.309         0.278
+ WAR3           0.531         0.479         0.432         0.389         0.351
+ WAR4           0.644         0.580         0.523         0.471         0.425
+ WAR5           0.760         0.685         0.617         0.556         0.501
+ WAR6           0.650         0.796         0.717         0.646         0.582
+ WAR7           0.556         0.680         0.823         0.742         0.668
+ WAR8           0.475         0.581         0.704         0.844         0.761
+ WAR9           0.406         0.497         0.601         0.722         0.860
+ WAR10          0.347         0.425         0.514         0.617         0.735
+
+
+           ESTIMATED COVARIANCE MATRIX FOR THE LATENT VARIABLES
+              HAR10         WTRAIT        WAR1          WAR2          WAR3
+              ________      ________      ________      ________      ________
+ HAR10          3.329
+ WTRAIT         0.000         2.418
+ WAR1           0.187         0.000         2.790
+ WAR2           0.251         0.000         2.385         2.790
+ WAR3           0.316         0.000         2.039         2.385         2.790
+ WAR4           0.383         0.000         1.743         2.039         2.385
+ WAR5           0.452         0.000         1.490         1.743         2.039
+ WAR6           0.525         0.000         1.274         1.490         1.743
+ WAR7           0.602         0.000         1.089         1.274         1.490
+ WAR8           0.686         0.000         0.931         1.089         1.274
+ WAR9           0.775         0.000         0.796         0.931         1.089
+ WAR10          0.873         0.000         0.681         0.796         0.931
+
+
+           ESTIMATED COVARIANCE MATRIX FOR THE LATENT VARIABLES
+              WAR4          WAR5          WAR6          WAR7          WAR8
+              ________      ________      ________      ________      ________
+ WAR4           2.790
+ WAR5           2.385         2.790
+ WAR6           2.039         2.385         2.790
+ WAR7           1.743         2.039         2.385         2.790
+ WAR8           1.490         1.743         2.039         2.385         2.790
+ WAR9           1.274         1.490         1.743         2.039         2.385
+ WAR10          1.089         1.274         1.490         1.743         2.039
+
+
+           ESTIMATED COVARIANCE MATRIX FOR THE LATENT VARIABLES
+              WAR9          WAR10
+              ________      ________
+ WAR9           2.790
+ WAR10          2.385         2.790
+
+
+           ESTIMATED CORRELATION MATRIX FOR THE LATENT VARIABLES
+              HTRAIT        HAR1          HAR2          HAR3          HAR4
+              ________      ________      ________      ________      ________
+ HTRAIT         1.000
+ HAR1           0.000         1.000
+ HAR2           0.000         0.901         1.000
+ HAR3           0.000         0.812         0.901         1.000
+ HAR4           0.000         0.732         0.812         0.901         1.000
+ HAR5           0.000         0.660         0.732         0.812         0.901
+ HAR6           0.000         0.594         0.660         0.732         0.812
+ HAR7           0.000         0.536         0.594         0.660         0.732
+ HAR8           0.000         0.483         0.536         0.594         0.660
+ HAR9           0.000         0.435         0.483         0.536         0.594
+ HAR10          0.000         0.392         0.435         0.483         0.536
+ WTRAIT         0.823         0.000         0.000         0.000         0.000
+ WAR1           0.000         0.156         0.141         0.127         0.114
+ WAR2           0.000         0.134         0.189         0.171         0.154
+ WAR3           0.000         0.114         0.162         0.215         0.193
+ WAR4           0.000         0.098         0.138         0.184         0.234
+ WAR5           0.000         0.083         0.118         0.157         0.200
+ WAR6           0.000         0.071         0.101         0.134         0.171
+ WAR7           0.000         0.061         0.086         0.115         0.146
+ WAR8           0.000         0.052         0.074         0.098         0.125
+ WAR9           0.000         0.045         0.063         0.084         0.107
+ WAR10          0.000         0.038         0.054         0.072         0.091
+
+
+           ESTIMATED CORRELATION MATRIX FOR THE LATENT VARIABLES
+              HAR5          HAR6          HAR7          HAR8          HAR9
+              ________      ________      ________      ________      ________
+ HAR5           1.000
+ HAR6           0.901         1.000
+ HAR7           0.812         0.901         1.000
+ HAR8           0.732         0.812         0.901         1.000
+ HAR9           0.660         0.732         0.812         0.901         1.000
+ HAR10          0.594         0.660         0.732         0.812         0.901
+ WTRAIT         0.000         0.000         0.000         0.000         0.000
+ WAR1           0.103         0.093         0.084         0.075         0.068
+ WAR2           0.139         0.125         0.112         0.101         0.091
+ WAR3           0.174         0.157         0.142         0.128         0.115
+ WAR4           0.211         0.190         0.171         0.155         0.139
+ WAR5           0.249         0.225         0.203         0.183         0.165
+ WAR6           0.213         0.261         0.235         0.212         0.191
+ WAR7           0.182         0.223         0.270         0.243         0.219
+ WAR8           0.156         0.191         0.231         0.277         0.250
+ WAR9           0.133         0.163         0.197         0.237         0.282
+ WAR10          0.114         0.139         0.169         0.202         0.241
+
+
+           ESTIMATED CORRELATION MATRIX FOR THE LATENT VARIABLES
+              HAR10         WTRAIT        WAR1          WAR2          WAR3
+              ________      ________      ________      ________      ________
+ HAR10          1.000
+ WTRAIT         0.000         1.000
+ WAR1           0.061         0.000         1.000
+ WAR2           0.082         0.000         0.855         1.000
+ WAR3           0.104         0.000         0.731         0.855         1.000
+ WAR4           0.126         0.000         0.625         0.731         0.855
+ WAR5           0.148         0.000         0.534         0.625         0.731
+ WAR6           0.172         0.000         0.457         0.534         0.625
+ WAR7           0.198         0.000         0.390         0.457         0.534
+ WAR8           0.225         0.000         0.334         0.390         0.457
+ WAR9           0.254         0.000         0.285         0.334         0.390
+ WAR10          0.286         0.000         0.244         0.285         0.334
+
+
+           ESTIMATED CORRELATION MATRIX FOR THE LATENT VARIABLES
+              WAR4          WAR5          WAR6          WAR7          WAR8
+              ________      ________      ________      ________      ________
+ WAR4           1.000
+ WAR5           0.855         1.000
+ WAR6           0.731         0.855         1.000
+ WAR7           0.625         0.731         0.855         1.000
+ WAR8           0.534         0.625         0.731         0.855         1.000
+ WAR9           0.457         0.534         0.625         0.731         0.855
+ WAR10          0.390         0.457         0.534         0.625         0.731
+
+
+           ESTIMATED CORRELATION MATRIX FOR THE LATENT VARIABLES
+              WAR9          WAR10
+              ________      ________
+ WAR9           1.000
+ WAR10          0.855         1.000
+
+
+     Beginning Time:  17:09:08
+        Ending Time:  17:09:46
+       Elapsed Time:  00:00:38
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2010 Muthen & Muthen
