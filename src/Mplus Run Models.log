@@ -1,4 +1,4 @@
-------Begin Mplus Model Run: 17Jul2013 17:09:08------
+------Begin Mplus Model Run: 19Jul2013 05:01:22------
 Target directory: /home/rich/Projects/dyad/src
 Run options:
 	Recursive (run models in subdirectories): FALSE
@@ -6,13 +6,4 @@ Run options:
 	Replace existing outfile: always
 ------
 Currently running model: losateo.inp
-Currently running model: losatfs.inp
-Currently running model: losatft.inp
-Currently running model: losathl.inp
-Currently running model: losat.inp
-Currently running model: losatlc.inp
-Currently running model: losatnl.inp
-Currently running model: losatsf.inp
-Currently running model: losatyh.inp
-
-------End Mplus Model Run: 17Jul2013 17:12:06------
+Run terminated abnormally

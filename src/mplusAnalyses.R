@@ -1,6 +1,6 @@
 #require("MplusAutomation")
 
-# When using wine, need to fix bug:
+# When using wine, need to fix bug in MplusAutomation:
 file.sources = list.files("/home/rich/Projects/MplusAutomation/R/", 
                           pattern="*.R$", full.names=TRUE, 
                           ignore.case=TRUE)
