@@ -1,11 +1,11 @@
 #require("MplusAutomation")
 
 # When using wine, need to fix bug in MplusAutomation:
-file.sources = list.files("/home/rich/Projects/MplusAutomation/R/", 
-                          pattern="*.R$", full.names=TRUE, 
-                          ignore.case=TRUE)
-sapply(file.sources,source,.GlobalEnv)
-require("gsubfn")
+## file.sources = list.files("/home/rich/Projects/MplusAutomation/R/", 
+##                           pattern="*.R$", full.names=TRUE, 
+##                           ignore.case=TRUE)
+## sapply(file.sources,source,.GlobalEnv)
+## require("gsubfn")
 
 # Create and run Mplus models for dyadic starts model
 
@@ -279,5 +279,4 @@ losatyhModel <- update(baseModel, rdata=losatyhData, usevariables=names(losatyhD
 losatyh <- mplusModeler(losatyhModel, dataout="../data/losatyh.dat", modelout="losatyh.inp", run=0)
 
 
-
-
+runModels(Mplus_command = "wine mplus")
